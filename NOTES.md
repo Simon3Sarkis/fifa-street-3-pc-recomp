@@ -68,6 +68,8 @@ never inside a .pdata function. A second scan after adding them found nothing ne
 4. `70cb34f` input: **test input scripts** (`input_script` setting, `include/rex/input/input_script.h` has
    the format). Timed pad events merged into the guest pad after the window-focus gate (runs work in the
    background); the XInput packet number advances on every scripted change. Off by default.
+5. input: `set <setting> <value>` in input scripts (changes a setting at a time, e.g. turn on
+   `vulkan_debug_log_frame_summaries_remaining` for match frames; see `tests/input/match_gpu_log.txt`).
 
 ## Boot log
 
@@ -87,6 +89,31 @@ never inside a .pdata function. A second scan after adding them found nothing ne
    **live match**, AI playing for 50 s, HUD and player names right. No crash, no new log warnings. EA Trax
    song cards show (menu music plays). Profile saves land in the run's user-data folder.
    Sheet: `work/snaps/play1_sheet.png`; main menu flow: `work/snaps/menu4_sheet.png`.
+
+5. **2026-11-23, picture vs Xbox 360 footage** (IGN "Gamebreaker Action",
+   youtube.com/watch?v=2hWaR0zAdfk, 720p, same Samba court). Route: `tests/input/match_quick.txt`, compare the
+   88-106 s screenshots (`work/snaps/ab_*`, side-by-side `work/snaps/shadows_compare.png`).
+
+   | Config | Player/fence/ball shadows | Player shading |
+   |---|---|---|
+   | D3D12, host render targets (old default) | missing | washed out, flat |
+   | D3D12 + float24 depth options | missing (+3 pipeline errors) | washed out |
+   | D3D12, ROV | missing | washed out |
+   | Vulkan, host render targets | missing | correct |
+   | **Vulkan, FSI** (`render_target_path_vulkan = 'fsi'`) | **present, as on 360** | **correct** |
+
+   Now the default in `config/fifastreet3.runtime.toml`. A match frame has 60-85 draws and 9 resolves: 8
+   screen tiles (1280x368 / 1280x336, predicated tiling) + the 1280x720 frontbuffer, no shadow-map
+   texture, so the shadows are drawn in the main pass (stencil/EDRAM-dependent), which only the exact
+   EDRAM path gets right. Xenia's own reports agree: Canary #259 (D3D12 players too bright, fine on
+   Vulkan; no long shadows in its screenshots), Xenia #2154 (picture a bit brighter than hardware).
+   Still to check: FSI cost on weaker GPUs (fine on the RTX 4090), overall brightness vs hardware, the
+   Gamebreaker greyscale effect, other arenas.
+
+   Also from those reports, for later: the game renders **native 1080p** when the console is set to 1080p
+   (Xenia: `internal_display_resolution`); ours renders 1280x720 like a 720p console. Audio crackles in
+   the first minutes are fixed in Xenia by `xma_decoder = "old"`; our log shows
+   `XmaContext N old: input offset 16416 exceeds buffer size 16384` in match runs - to check by ear.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.

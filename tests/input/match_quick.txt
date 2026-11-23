@@ -1,0 +1,20 @@
+# Fresh profile -> PLAY NOW -> a match (Brazil v England, Samba, first to 5), watch ~20 s, quit.
+# Same route as play_now.txt, shorter. Used for picture A/B runs: compare the 90-105 s screenshots.
+0      log boot
+12000  press START 150
++8000  press START 150
++8000  press A 150   # create profile
++6000  press A 150   # enable autosave
++6000  press A 150   # save icon notice
++6000  press A 150   # lead profile notice
++6000  press A 150   # autosave on notice
++10000 log main menu: A on PLAY NOW
++0     press A 150
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings
++5000  press A 150
++5000  press A 150
++5000  press A 150
++5000  log match: no input
++20000 quit

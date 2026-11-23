@@ -11,6 +11,14 @@ game_data_root = 'game'
 # on vblank runs uncapped (Skate 1's finding).
 vsync = true
 
+# Renderer: Vulkan with exact EDRAM emulation (fragment shader interlock). Checked 2026-11-23
+# against Xbox 360 footage (youtube.com/watch?v=2hWaR0zAdfk) with tests/input/match_quick.txt:
+# - player and fence shadows on the court only appear with the FSI render-target path (D3D12 host
+#   RTs, D3D12 ROV and Vulkan host RTs all lose them; so do Xenia Canary/Edge);
+# - players are washed out and flat on D3D12 (also in the Xenia Canary report), correct on Vulkan.
+gpu_backend = 'vulkan'
+render_target_path_vulkan = 'fsi'
+
 # The console's own resolution: the SDK defaults to 2x.
 draw_resolution_scale_x = 1
 draw_resolution_scale_y = 1

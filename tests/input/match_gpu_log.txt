@@ -1,0 +1,22 @@
+# match_quick route, then turn on Vulkan GPU debug logs for a few match frames.
+# Run with --gpu_backend=vulkan.
+0      log boot
+12000  press START 150
++8000  press START 150
++8000  press A 150   # create profile
++6000  press A 150   # enable autosave
++6000  press A 150   # save icon notice
++6000  press A 150   # lead profile notice
++6000  press A 150   # autosave on notice
++10000 press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings
++5000  press A 150
++5000  press A 150
++5000  press A 150
++5000  log match: GPU logs on
++0     set vulkan_debug_frame_summary_interval_frames 1
++0     set vulkan_debug_log_frame_summaries_remaining 6
++0     set vulkan_debug_log_resolve_decisions_remaining 60
++4000  quit
