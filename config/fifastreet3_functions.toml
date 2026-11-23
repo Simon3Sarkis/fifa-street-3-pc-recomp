@@ -1,0 +1,34 @@
+# Function boundary overrides for FIFA Street 3 (NTSC, media 1B770E2C, xex SHA-1 3BD3F52E...) codegen.
+
+# The title imports __C_specific_handler / RtlUnwind, so generate the SEH exception wrappers.
+generate_exception_handlers = true
+
+# CRT setjmp/longjmp, redirected to native versions (EA titles use them for Lua error handling).
+# setjmp: hook check at +0 (lis r4,0x8285 / lwz r0,-0x6434(r4) / bnectr), then saves LR, CR,
+# f14-f31 from 0(r3). No .pdata entry. Same layout and sizes as PGR4's CRT routines.
+setjmp_address = 0x82580FD0
+# longjmp: .pdata entry 0x82580CB0 size 0x314; restores f14-f31 from 0(r7) (r7 = jmp_buf).
+longjmp_address = 0x82580CB0
+
+[functions]
+# No names: "setjmp"/"longjmp" clash with <csetjmp> in the generated headers.
+0x82580FD0 = { size = 0x2CC }  # setjmp
+0x82580CB0 = { size = 0x314 }  # longjmp
+
+# First codegen pass (2026-11-23): 3 unresolved calls + 1 function that could not seal.
+# Leaf functions without .pdata, reached by tail branches; the analyzer only saw a block inside
+# them (0x8229EFE8) or nothing at all (0x823F0080). Bounds end at the next .pdata entry.
+0x8229EF98 = { end = 0x8229F008 }  # lbz 0x5A0(r3) ... ends in a vtable bctr
+0x823F0080 = { end = 0x823F00E8 }  # target of the this-adjust thunk at 0x8241A480
+# this-adjust thunk (addi r3,r3,4 ; b 0x824D2BF0), reached from the thunk at 0x824DC048.
+0x824DB6F0 = { size = 0x8 }
+
+# 0x8218AD68 switches on r7 through a byte-offset table at 0x820D6B08 (target = 0x8218ADA4 +
+# byte*4) with no bounds check of its own; the analyzer guessed 33 entries, read bytes of the next
+# table, and pulled 0x8218AF08's code into this function. All 6 callers pass r7 <= 9 (0x82181D58:
+# cmplwi r25,9 / bgt), so the table has 10 entries: 2E 2E 36 08 00 06 10 57 57 0A.
+[[switch_tables]]
+address = 0x8218ADA0
+register = 7
+labels = [0x8218AE5C, 0x8218AE5C, 0x8218AE7C, 0x8218ADC4, 0x8218ADA4,
+          0x8218ADBC, 0x8218ADE4, 0x8218AF00, 0x8218AF00, 0x8218ADCC]

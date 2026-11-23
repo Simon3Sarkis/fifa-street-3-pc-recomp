@@ -1,0 +1,9 @@
+[project]
+name = "fifastreet3"
+sdk_version = "0.10.0"
+game_root = "game"
+
+[entrypoint]
+file_path = "game/default.xex"
+out_directory_path = "generated/default"
+includes = ["config/fifastreet3_functions.toml", "config/fifastreet3_scanned.toml"]

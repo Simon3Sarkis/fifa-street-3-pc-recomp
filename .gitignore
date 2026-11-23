@@ -1,0 +1,11 @@
+# Game files and everything derived from them: never committed
+/FIFA Street 3/
+/Xenia Canary/
+/game/
+/generated/
+/work/
+/out/
+/dist/
+*.iso
+*.xex
+*.log

@@ -1,0 +1,11 @@
+# Boot, press Start at the title / attract screen, then A to accept what follows.
+# Times are ms since the game started.
+0      log boot
+12000  log pressing Start (title screen)
++0     press START 150
++8000  press START 150
++8000  log pressing A
++0     press A 150
++6000  press A 150
++10000 log end
++0     quit

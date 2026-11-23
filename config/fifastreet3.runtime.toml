@@ -1,0 +1,20 @@
+# Runtime settings for fifastreet3.exe. Copied next to the exe as fifastreet3.toml by tools/iterate.ps1.
+#
+# Stage A (1:1) baseline: only what the game needs to run as on the console. Any setting added
+# later to fix a difference gets a comment saying what it fixes and how it was confirmed.
+
+# Since SDK 0.10 the Xenos GPU emulation is a plugin; without this the game starts with no GPU.
+gpu_plugin = 'xenos'
+game_data_root = 'game'
+
+# Real 60 Hz vblanks. With vsync off the runtime fires vblank at 1000 Hz and a game that paces
+# on vblank runs uncapped (Skate 1's finding).
+vsync = true
+
+# The console's own resolution: the SDK defaults to 2x.
+draw_resolution_scale_x = 1
+draw_resolution_scale_y = 1
+
+fullscreen = false
+log_level = 'info'
+show_fps_counter = false

@@ -1,0 +1,19 @@
+# Boot to the main menu on a fresh profile: Start at the title, then A through
+# "create a profile", "enable autosave" and the save-icon notice.
+# Times are ms since the game started.
+0      log boot
+12000  log title: Start
++0     press START 150
++8000  press START 150
++8000  log profile prompt: A (create profile)
++0     press A 150
++6000  log autosave prompt: A (enable)
++0     press A 150
++6000  log save notice: A (okay)
++0     press A 150
++6000  log lead profile notice: A (okay)
++0     press A 150
++6000  log autosave-on notice: A (okay)
++0     press A 150
++8000  log main menu reached?
++12000 quit

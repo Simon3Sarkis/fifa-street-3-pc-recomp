@@ -1,0 +1,22 @@
+# Fresh profile -> main menu -> PLAY NOW, then A through the setup screens into a match,
+# then let the match run with no input. Times are ms since the game started.
+0      log boot
+12000  press START 150
++8000  press START 150
++8000  press A 150   # create profile
++6000  press A 150   # enable autosave
++6000  press A 150   # save icon notice
++6000  press A 150   # lead profile notice
++6000  press A 150   # autosave on notice
++10000 log main menu: A on PLAY NOW
++0     press A 150
++6000  log setup screens: A
++0     press A 150
++5000  press A 150
++5000  press A 150
++5000  press A 150
++5000  press A 150
++5000  press A 150
++5000  log stop pressing; watch
++40000 log end
++0     quit
