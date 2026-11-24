@@ -1,0 +1,23 @@
+﻿# 1:1 check (skip unchanged fetch constant writes): pause a match (frozen scene), snap twice with the options at their
+# defaults (a0, a1 = noise floor), switch them on with `set`, snap twice more (b0, b1). Compare with
+# python tools/imgdiff.py <run> a0 a1 b0 b1. Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  stick L 0.6 0.3 3000
++4000  snap match_1
++1000  press START 150  # pause
++3000  snap a0
++1500  snap a1
++0     set gpu_skip_unchanged_fetch_constant_writes true
++1500  snap b0
++1500  snap b1
++0     quit

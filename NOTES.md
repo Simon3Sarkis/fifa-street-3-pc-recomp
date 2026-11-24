@@ -448,6 +448,18 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     Final native recording (60 s of play, shipped config only): 0 gaps, 0 clipping, the 2 click
     candidates are kick-sound onsets (checked up close), audio exactly real time.
 
+18. **2026-11-24, toward 100% at 10 W (native).** Per-frame timing (`debug_log_frame_timing`,
+    `tests/input/perf_match_frames.txt`, `tools/frame_timing.py`): at 10 W **98.9-99.7% of frames are
+    on time**, 11-38 single 33 ms frames a minute. First reading "the GPU command thread is saturated
+    (16.3 ms CPU per 16.7 ms frame)" was **wrong**: its CPU time includes the frame-boundary spin, and
+    stays at 16.3 ms whatever its workload. Two cuts to its per-draw work changed nothing (interleaved,
+    3 pairs each): inert no-PS draw skip + binding reuse -0.03 FPS; new
+    `gpu_skip_unchanged_fetch_constant_writes` (the game writes ~21k fetch-constant dwords a frame,
+    ~60% unchanged; pixel-identical, off by default) -0.03 FPS. Kept: a known-register bitset instead
+    of `GetRegisterInfo`'s big switch on every register write (bookkeeping only). The misses most
+    likely come from the GPU at 10 W clocks (~700-850 MHz); next: measure GPU busy per frame
+    (per-submission timestamps, excluding idle between submissions) before cutting GPU work.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
