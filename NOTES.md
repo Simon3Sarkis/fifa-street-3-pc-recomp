@@ -299,6 +299,54 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     frame capture is a to-do. **Default renderer is now `render_target_path_vulkan = 'host'`.**
     (The D3D12 washed-out players is real and separate; D3D12 isn't used.)
 
+15. **2026-11-23/24, Steam Deck to ~60 FPS: what actually limited it.** Method first, because the early
+    numbers misled:
+    - **Benchmark:** `tests/input/perf_pause.txt` pauses a match and measures the frozen scene (the game
+      keeps rendering it). The frozen scene still differs per run (camera and AI depend on load timing;
+      no stick input doesn't help), from 33 to 148 draws, so `tools/deck/bench.sh` prints each run's
+      draw / render-pass count next to its FPS. Full matches (`perf_match.txt`) for final checks.
+    - **1:1 check for GPU options:** freeze the frame under the pause menu, snap, switch the option on
+      with `set`, snap again, `tools/imgdiff.py` (`tests/input/pause_ab*.txt`). 0 px differ for barrier
+      elision and the three resolve/descriptor options.
+    - **Thread monitor** (`tools/deck/monitor.sh`, started by run.sh): per-thread CPU and core, CPU MHz,
+      GPU clock, APU W every 4 s. **winsampler** (`tools/winsampler`, `tools/deck/winsample.sh
+      phase:pause`) samples thread IPs inside Proton; Wine's ntdll by export (`ZwDelayExecution` etc. are
+      blocked threads, the rest is real work).
+
+    Findings, in the order they mattered:
+    - **Render-pass churn:** every shared-memory barrier ends the render pass, and the game's GPU
+      skinning (one vertex-shader memexport draw per character part, interleaved with normal draws)
+      made ~200 such pass ends a frame. SDK `vulkan_memexport_barrier_elision` tracks exact read/write
+      ranges and barriers only on a real hazard: passes per frame 182 -> 82, pixel-identical. The other
+      ~60 pass ends are resolves and RT transfers (inherent).
+    - **Controller polling:** every guest input call re-enumerated XInput devices; under Proton each is a
+      blocking device I/O round trip. Main game thread 65% blocked in `NtDeviceIoControlFile`.
+      `input_device_refresh_ms = 1000`.
+    - **The game's spin-wait:** with input fast, the main loop's frame wait called SwitchToThread
+      ~500,000 times a second (`debug_log_guest_yields`, `fs3_log_yield_sites`: one call site,
+      0x8220BD58). Hook on the helper `sub_824765D0` adds a short sleep after 100 us (hooks file).
+    - **CPU clock trap (the 30 FPS runs):** the Deck CPU (amd-pstate-epp, balance_performance) clocks
+      each core by its own activity. Once a frame slips to 30 FPS every thread idles half the time, the
+      CPU drops to ~2.35 GHz and stays there - half of the runs locked at exactly 30.0. Letting the CP
+      thread poll through its per-frame wait (`wait_reg_mem_spin_us = 50000`) keeps the clock at 3.3 GHz:
+      6/6 runs 57-60 FPS. (Lesson: on the Deck, removing a spin can make it slower.)
+    - **UI tick thread:** Proton emulates `WaitForVBlank` by polling (~40% of a core);
+      `dxgi_ui_tick_timer` ticks from a waitable timer instead (~5%).
+    - Smaller: vectorised `vrsqrtefp` (exhaustively bit-exact, ~2x), job-worker idle backoff, fence-wait
+      hook (entry 13), resolve/descriptor options.
+
+    Paused-scene benchmark, 6 runs each: 49.5 +- 15 FPS (bimodal 30/60) -> 59.6 +- 0.6, CPU 3.3 GHz,
+    APU 13-14 W. Scenes above ~130 draws still dip to ~58.
+
+    Full matches (`perf_match.txt`, ~60 s of play): 58.7 +- 0.3 in the first batch of 5, but the same
+    build gave 56.2 +- 1.4 an hour later. **Batch-to-batch drift (2-3 FPS) is bigger than the spread
+    inside a batch**, so separate batches can't decide an A/B: `tools/deck/bench_ab.sh` alternates A and
+    B run by run and reports the paired difference. The dips are single missed frames (33 ms) while the
+    GPU is 100% busy at ~850-1040 MHz (power-limited: APU 13-15 W) - a per-draw GPU trace of a paused
+    frame (`tests/input/perf_pause_trace.txt`) shows no idle gaps; the game's own drawing dominates
+    (one skinned-character vertex shader ~1M vertices a frame over ~290 draws). What's left is GPU clock,
+    i.e. CPU power.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
