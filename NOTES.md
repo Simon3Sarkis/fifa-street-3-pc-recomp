@@ -429,6 +429,25 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     scripted run through Steam, write `steam_next_run` (see the script) and open
     `steam://rungameid/16097259777280704512`. Launched outside Steam, `ENABLE_GAMESCOPE_WSI=1` hangs.
 
+17. **2026-11-24, Steam Deck at 10 W and an audio check (native build).** TDP set to 10 W by the owner
+    (`power1_cap` 10 W). Interleaved full matches: **59.6 FPS** (60 held 62-83% of windows) at ~9.2 W
+    APU; the long CP spin still helps there (off: 59.1, paired -0.47 +- 0.12, no watts saved).
+
+    **Audio, measured** (`tools/deck/audiorecord.sh` records the output sink's *monitor* during the
+    match + PipeWire's `pw-top`; `tools/audio_check.py` finds gaps >= 4 ms inside audible sound, clicks,
+    clipping, level, balance, spectrum, and plots; self-tested on a synthetic signal). The native build
+    had two problems the Proton build didn't:
+    - **Downmix:** a docked Deck's stereo HDMI sink reports 6 ch to SDL, so the SDK passed 5.1 through
+      and PipeWire folded it (LFE in, not normalised): ~5 dB hotter, clipping, bass-heavy. New
+      `audio_force_stereo` (config: true) folds with the standard weights; levels now match Proton.
+    - **~100 empty 5 ms frames a minute** (audible crackle): PipeWire ran the native stream at a 1024
+      quantum, so each callback drained four guest frames at once and the XMA decoder (polling every
+      2 ms) fell behind inside the burst - the *game* produced silent frames (new `audio_stats` counter
+      `guest_zero_frames`, 0 for Proton). `audio_device_sample_frames = 256` (one guest frame): 0 empty
+      frames, 0 gaps, quantum 256 with 0 xruns; also 0 on the PC (Windows), still 60 FPS on both.
+    Final native recording (60 s of play, shipped config only): 0 gaps, 0 clipping, the 2 click
+    candidates are kick-sound onsets (checked up close), audio exactly real time.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

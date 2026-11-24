@@ -58,6 +58,17 @@ wait_reg_mem_spin_wine_us = 50000
 # which kept the UI thread at ~40% of a core on the Deck (now ~5%; paused-scene benchmark 59.6 +- 0.6).
 dxgi_ui_tick_timer = true
 
+# Audio: fold the game's 5.1 mix to stereo ourselves (centre/surrounds -3 dB, LFE dropped, normalised).
+# A docked Steam Deck's stereo HDMI sink reports 6 channels to SDL; passing 5.1 through left the
+# downmix to PipeWire, which came out ~5 dB hotter with clipping and a bass-heavy balance (recorded and
+# compared with the Proton build, 2026-11-24). Set false for a real 5.1 speaker setup.
+audio_force_stereo = true
+# Ask the audio device for 256-sample periods (one guest audio frame, 5.3 ms). Natively on the Deck
+# PipeWire otherwise ran the stream at 1024: each callback took four guest frames at once, the XMA
+# decoder (polling every 2 ms) fell behind inside the burst and the game played ~100 empty 5 ms frames
+# a minute (audible crackle; Proton ran at 256 and had none). With 256: 0 on the Deck and on the PC.
+audio_device_sample_frames = 256
+
 # GPU: automatic (the Deck has one). On a PC with two GPUs, `vulkan_device = N` picks one; the log
 # lists them under "Available Vulkan physical devices".
 
