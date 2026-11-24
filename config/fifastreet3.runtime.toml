@@ -38,6 +38,20 @@ vulkan_direct_resolve_fast32 = true
 vulkan_deferred_resolve_clears = true
 vulkan_reuse_transient_texture_descriptors = true
 
+# Controllers: enumerate devices at most once a second instead of on every input call (the game asks
+# for all four users every frame). Under Proton each enumeration is a blocking device I/O round trip
+# per pad slot: the game's main thread spent ~65% of its time there on the Steam Deck. Pad state is
+# still read fresh on every call; a pad plugged in shows up within a second.
+input_device_refresh_ms = 1000
+
+# CPU clocks on the Steam Deck: its CPU picks each core's clock from how busy that core looks
+# (amd-pstate-epp, balance_performance). When the GPU command thread sleeps through its per-frame
+# wait for the game, a frame that slips once to 30 FPS leaves every thread half idle, the clocks drop
+# to ~2.35 GHz and the game stays at 30 (half of all paused-scene runs, 2026-11-24). Polling through
+# the wait (up to 50 ms, longer waits such as loading screens still sleep) keeps that core and the
+# clock up: 6 of 6 runs at 57-60 FPS, CPU 3.3 GHz, APU 12-15 W.
+wait_reg_mem_spin_us = 50000
+
 # GPU: automatic (the Deck has one). On a PC with two GPUs, `vulkan_device = N` picks one; the log
 # lists them under "Available Vulkan physical devices".
 
