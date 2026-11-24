@@ -1,9 +1,12 @@
 # Short match probe for picture A/B runs: saved-profile route into the Samba match, two snaps, quit.
 # Use -Save work\saves\fresh_profile. Check with tools/check_match.py <run> probe_1 probe_2.
+# Title -> main menu, robust to load time (PC ~19 s, Deck under Proton later): wait for the title's
+# FIFA logo pixel, then press START every 1.5 s until the MAIN MENU heading pixel shows.
 0      log boot
-20000  press START 150  # title (3 presses: PRESS START shows at 19-25 s)
-+3000  press START 150
-+3000  press START 150
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++0     log phase: main menu
 +4000  press A 150   # PLAY NOW
 +6000  press A 150   # select teams
 +5000  press A 150   # line-ups

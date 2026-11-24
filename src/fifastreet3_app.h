@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <rex/cvar.h>
 #include <rex/filesystem.h>
 #include <rex/rex_app.h>
 
@@ -32,9 +33,15 @@ class FifaStreet3App : public rex::ReXApp {
     if (paths.game_data_root.empty()) paths.game_data_root = exe_dir / "game";
     if (paths.game_data_root.is_relative())
       paths.game_data_root = exe_dir / paths.game_data_root;
+    // portable.txt sets the default only: an explicit user_data_root / cache_root (test runs pass
+    // per-run folders) wins. Before 2026-11-23 it overrode them, so Deck test runs ignored -Save.
     if (std::filesystem::exists(exe_dir / "portable.txt")) {
-      paths.user_data_root = exe_dir / "userdata";
-      paths.cache_root = paths.user_data_root / "cache";
+      if (!rex::cvar::HasNonDefaultValue("user_data_root")) {
+        paths.user_data_root = exe_dir / "userdata";
+      }
+      if (!rex::cvar::HasNonDefaultValue("cache_root")) {
+        paths.cache_root = paths.user_data_root / "cache";
+      }
     }
   }
 };

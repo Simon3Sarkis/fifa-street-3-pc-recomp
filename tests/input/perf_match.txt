@@ -1,14 +1,12 @@
 # Performance run. Use -Save work\saves\fresh_profile. Menus, then a Samba match with ~60 s of
 # play input (running + trick flicks, so the camera and players move), snaps along the way.
 # Read the [frame stats] lines (log_frame_stats) from the log.
+# Title -> main menu, robust to load time (PC ~19 s, Deck under Proton later): wait for the title's
+# FIFA logo pixel, then press START every 1.5 s until the MAIN MENU heading pixel shows.
 0      log boot
-# The title's PRESS START shows at 19-25 s depending on load time; a single press at 20 s missed it
-# in 4 of 9 runs (they measured the title screen). Three presses: extra ones on the main menu
-# just advance like A, and every screen up to the match advances.
-20000  press START 150  # title
-+3000  press START 150
-+3000  press START 150
-+3000  snap main_menu
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
 +0     log phase: main menu
 +1000  press A 150   # PLAY NOW
 +6000  press A 150   # select teams

@@ -242,6 +242,30 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     per-run userdata/snaps/logs. Not tested yet: the Deck (deck@192.168.1.82 in Super Odyssey) did not
     answer SSH on 2026-11-23.
 
+12. **2026-11-23, Steam Deck running + first verified baseline.** Deck OLED (Galileo, RADV VANGOGH),
+    SteamOS 3.9.5, Gaming Mode, stock power settings (perf level auto, 15 W cap, GPU up to 1600 MHz),
+    Windows build under Proton Experimental (11.0-100), docked to a 1080p screen (1920x1080 swapchain).
+    - Tools: `tools/deck/remote_run.sh <name> <script> [flags]` (SAVE=1 for the saved profile) runs a
+      script as a `systemd-run --user` unit (plain `setsid nohup` over SSH got killed) and fetches the log
+      and snaps. Copying the package + game took 27 s.
+    - Route fixes: the Deck's load is slower, so fixed-time Start presses missed the title. New script
+      commands (SDK): `waitpixel X Y R G B tol ms` and `pressuntil BUTTON period X Y R G B tol ms`
+      (pixel of the game's own output, 1280x720 coordinates). Title marker (410,446)=231,231,231 (FIFA
+      logo), main-menu marker (296,104)=230,230,230 ("MAIN MENU" heading). PC: title 13.7 s, menu 19.8 s.
+    - `portable.txt` used to override `--user_data_root`, so Deck runs ignored the test save; fixed in
+      `src/fifastreet3_app.h` (portable is only the default now).
+
+    | Deck, 720p, verified match | match FPS | GPU frame span | notes |
+    |---|---|---|---|
+    | FSI (1:1 picture) | **34.4** | 30.9 ms | Main (FSI draws) ~26 ms, ResolveGap 2.3 |
+    | host render targets (no shadows) | 37.4 | 31.8 ms | Main 11.4, ResolveGap 12.5, RtTransfer 3.8, CopyDump 3.1 |
+
+    During the host-path match: **GPU 99% busy at 1040-1100 MHz** (not 1600): the 15 W budget is shared,
+    and the CPU used ~3.3 cores (a guest thread "STREET:..." 92% - likely the D3D fence spin loop seen on
+    the PC; "Main XThread" 63%; GPU command processor 57%; UI/presenter 39%; audio 22%). As in Super
+    Odyssey: CPU time saved = GPU clock on the Deck. Next: cut the spinning (guest D3D spin loop, the new
+    WAIT_REG_MEM spin), then GPU work per frame (FSI draw cost; host path's transfers/copies).
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
