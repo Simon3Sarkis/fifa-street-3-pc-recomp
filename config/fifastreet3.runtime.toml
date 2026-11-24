@@ -54,6 +54,12 @@ input_device_refresh_ms = 1000
 # default 2 ms spin and a locked 60.
 wait_reg_mem_spin_wine_us = 50000
 
+# Native Linux build: give the GPU command thread CPU 0 and keep the game's other threads off that core
+# (CPUs 0 and 1). At 10 W on the Deck the missed frames were the same work taking twice as long - the
+# thread preempted or sharing its core; interleaved A/B: missed frames per match 10/11/9 -> 5/2/2
+# (99.7% -> 99.9% of frames on time). No effect on Windows.
+gpu_command_thread_cpu = 0
+
 # UI ticks from a high-resolution timer at the display rate: Proton emulates WaitForVBlank by polling,
 # which kept the UI thread at ~40% of a core on the Deck (now ~5%; paused-scene benchmark 59.6 +- 0.6).
 dxgi_ui_tick_timer = true
