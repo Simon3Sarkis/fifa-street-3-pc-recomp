@@ -11,13 +11,14 @@ game_data_root = 'game'
 # on vblank runs uncapped (Skate 1's finding).
 vsync = true
 
-# Renderer: Vulkan with exact EDRAM emulation (fragment shader interlock). Checked 2026-11-23
-# against Xbox 360 footage (youtube.com/watch?v=2hWaR0zAdfk) with tests/input/match_quick.txt:
-# - player and fence shadows on the court only appear with the FSI render-target path (D3D12 host
-#   RTs, D3D12 ROV and Vulkan host RTs all lose them; so do Xenia Canary/Edge);
-# - players are washed out and flat on D3D12 (also in the Xenia Canary report), correct on Vulkan.
+# Renderer: Vulkan, host render targets. Checked against Xbox 360 footage (youtube 2hWaR0zAdfk and
+# other IGN clips): Vulkan draws the player/fence/ball shadows and the correct player shading on both
+# render-target paths (D3D12 washes the players out; an earlier note that Vulkan host RTs lose the
+# shadows was a misreading of frames where players stood in shade - corrected 2026-11-23). All 7
+# arenas compared host vs FSI on the PC: visually equivalent. Host is the faster path on the Steam
+# Deck (720p match 44.9 vs 34.3 FPS); FSI ('fsi', exact EDRAM) stays available for comparisons.
 gpu_backend = 'vulkan'
-render_target_path_vulkan = 'fsi'
+render_target_path_vulkan = 'host'
 
 # Video mode the game reads (VdQueryVideoMode): 720p, as a 360 set to 720p output. The baseline target
 # is the Steam Deck at 1280x720, locked 60 FPS (owner, 2026-11-23). The game renders native 1080p when

@@ -19,4 +19,7 @@
 +6000  snap probe_1
 +0     stick L -0.5 0.5 3000
 +5000  snap probe_2
++4000  snap probe_3
++4000  snap probe_4
++4000  snap probe_5
 +500   quit

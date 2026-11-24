@@ -287,6 +287,18 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     overlapping). Remaining CPU: Main XThread 65%, GPU CP 50%, UI/presenter 39%, 2 XThreads ~30%, audio 20%.
     WAIT_REG_MEM spin stays on (slightly faster).
 
+14. **2026-11-23, CORRECTION: Vulkan host render targets do draw the shadows.** Entry 5's table said
+    "Vulkan, host render targets: shadows missing" - wrong: those frames had the players in shade. With
+    `tests/input/shadow_probe.txt` (snaps later in the match, players in the sun), host and FSI both show
+    the long player, ball and fence shadows (`work/snaps/sh_detail.png`); the Deck's host run too.
+    How they're drawn (draw-state log): per-player shadow textures (entry 10), then the court is re-drawn
+    with **depth EQUAL** and a multiply blend sampling them - so the shadows depend on depth matching
+    exactly between passes. Resolved shadow textures (`tools/untile.py`, `work/dumps`) match on both paths.
+    All 7 arenas host vs FSI (PC, `tests/input/arenas`, sheet `work/snaps/arenas_fsi_vs_host.png`):
+    visually equivalent. Pixel diffs need the same frame (camera moved between captures) - a deterministic
+    frame capture is a to-do. **Default renderer is now `render_target_path_vulkan = 'host'`.**
+    (The D3D12 washed-out players is real and separate; D3D12 isn't used.)
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

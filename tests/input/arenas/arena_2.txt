@@ -1,14 +1,10 @@
-# PLAY NOW on arena 2 (RIGHT pressed 2 times from the default, SAMBA; 7 arenas, so +7 = SAMBA).
-# Saves the game's own frames with `snap`: settings screen, then 5 match frames.
+# PLAY NOW on arena 2 (RIGHT pressed 2 times from SAMBA; 7 arenas). Use -Save work\saves\fresh_profile.
+# Snaps: settings screen, then 5 match frames.
 0      log boot
-13000  press START 150
-+8000  press START 150
-+8000  press A 150   # create profile
-+6000  press A 150   # enable autosave
-+6000  press A 150   # save icon notice
-+6000  press A 150   # lead profile notice
-+6000  press A 150   # autosave on notice
-+10000 press A 150   # PLAY NOW
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  log phase: main menu
++0     press A 150   # PLAY NOW
 +6000  press A 150   # select teams
 +5000  press A 150   # line-ups
 +3500  log match settings: arena +2
@@ -16,9 +12,11 @@
 +700   press RIGHT 120
 +1000  snap settings
 +500   press A 150   # start
-+5000  press A 150   # tutorial cards
-+5000  press A 150
-+5000  press A 150
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     stick L 0.6 0.3 3000
 +4000  snap match_1
 +4000  snap match_2
 +4000  snap match_3
