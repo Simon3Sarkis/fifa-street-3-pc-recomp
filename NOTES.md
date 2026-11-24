@@ -222,6 +222,26 @@ never inside a .pdata function. A second scan after adding them found nothing ne
    is RDNA 2 too). The 1:1 shadows must work on the host-render-target path, which then needs ~3x (49.8 ->
    16.7 ms GPU). Next.
 
+10. **2026-11-23, how the player shadows are drawn** (`tools/draw_states.py` on a `debug_log_draws_ps=*` log,
+    `tests/input/draw_state_log.txt`). Per player, at the start of the frame: clear a small 1x target
+    (pitch 320, 8888 + D24FS8) by drawing a quad on a **4x MSAA alias of the same EDRAM at pitch 160**
+    (ps 2E372EA2, stencil replace), draw the player into it (ps 8DF5463F, ~10 draws), resolve it to a
+    256x256 texture (the 14 x 0x40000 resolves). Later the court draws project those textures. Suspect for
+    the host-render-target path losing the shadows: the 4x-over-1x alias clear needs an ownership transfer
+    between two host render targets with different sample counts. Resolve dumps of both paths for checking
+    this are in `work/dumps/fsi` and `work/dumps/host` (tiled 256x256 8888; to untile and compare).
+    Skipping 457C0FC6 = untextured players (player shader); F2768D26/4B43E140/A51BF2F8 no visible change.
+    **Parked:** the owner moved the baseline to the Steam Deck; whether FSI is slow there (RADV) decides
+    whether this is needed.
+
+11. **2026-11-23, baseline is now the Steam Deck, 1280x720, locked 60 FPS** (owner; the PC iGPU was a poor
+    stand-in). Config: `resolution = '720p'`, GPU automatic. Deck route (as in Super Odyssey): the Windows
+    build under Proton. `tools/make_deck_package.ps1` -> `dist/fifastreet3-deck` (exe, DLLs, app-local VC++
+    runtime, config, portable.txt, tools/deck, tests/input); `tools/deck/push.sh [--with-game]` copies it
+    over SSH; on the Deck `tools/deck/run.sh <name> [script]` runs it under Proton Experimental with
+    per-run userdata/snaps/logs. Not tested yet: the Deck (deck@192.168.1.82 in Super Odyssey) did not
+    answer SSH on 2026-11-23.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

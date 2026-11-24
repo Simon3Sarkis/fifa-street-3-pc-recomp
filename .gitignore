@@ -9,3 +9,4 @@
 *.iso
 *.xex
 *.log
+/tools/deck/deck.local

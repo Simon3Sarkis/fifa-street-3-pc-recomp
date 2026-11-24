@@ -1,0 +1,19 @@
+# Log the render-backend state of every draw for ~1 match frame (debug_log_draws_ps = *).
+# Use -Save work\saves\fresh_profile.
+0      log boot
+20000  press START 150
++3000  press START 150
++3000  press START 150
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     stick L 0.6 0.3 3000
++6000  snap logged
++0     set debug_log_draws_ps *
++0     set debug_log_draws_remaining 2500
++2000  quit

@@ -1,0 +1,19 @@
+# Dump the resolved textures of 2 match frames (run with --readback_resolve=full). Use -Save work\saves\fresh_profile.
+# Use -Save work\saves\fresh_profile.
+0      log boot
+20000  press START 150
++3000  press START 150
++3000  press START 150
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     stick L 0.6 0.3 3000
++6000  snap logged
++0     set vulkan_debug_frame_summary_interval_frames 1
++0     set vulkan_debug_log_frame_summaries_remaining 2
++2000  quit
