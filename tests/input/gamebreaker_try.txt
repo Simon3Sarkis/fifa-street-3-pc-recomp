@@ -1,0 +1,614 @@
+# Run with -Save work\savesresh_profile. Gamebreaker attempt: title -> main menu -> PLAY NOW ->
+# match, turn the help cards off (B, UP to DISABLE, A), then ~150 s of right-stick trick flicks while
+# running with the left stick, RB (activate Gamebreaker) every ~5 s, A every ~6 s, snaps every ~10 s.
+0      log boot
+20000  press START 150  # title ("PRESS START" shows at ~19 s; the legal screen lasts to ~16 s)
++4000  snap main_menu
++1000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  log help cards off
++0     press B 150   # DISABLE on the first card -> "are you sure?"
++1200  press UP 150  # select DISABLE
++800   press A 150
++1500  snap help_off
++500   log tricks start
++0   stick R 1 0 150
++0     stick L 0.6 0.3 6000
++0     press RB 150
++0     snap gb_00
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++0     press RB 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_01
++300   stick R 0.7 0.7 150
++0     press RB 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L -0.6 0.2 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++0     press RB 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_02
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press RB 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++0     press RB 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_03
++300   stick R 0.7 0.7 150
++0     stick L 0.6 -0.3 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press RB 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++0     press RB 150
++300   stick R 1 0 150
++0     stick L -0.6 0.2 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_04
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press RB 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     press RB 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.6 0.3 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_05
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press RB 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++0     press RB 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_06
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L -0.6 0.2 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press RB 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.2 0.6 6000
++300   stick R -0.7 0.7 150
++0     press RB 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++0     snap gb_07
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press RB 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.6 0.3 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     press RB 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_08
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press RB 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L -0.6 0.2 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++0     press RB 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_09
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press RB 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++0     press RB 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++0     snap gb_10
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.6 -0.3 6000
++0     press RB 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     press RB 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L -0.6 0.2 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_11
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press RB 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++0     press RB 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_12
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.6 0.3 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press RB 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++0     press RB 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_13
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L -0.6 0.2 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press RB 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     press RB 150
++300   stick R 0.7 0.7 150
++0     stick L 0.2 0.6 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     snap gb_14
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press RB 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.6 0.3 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++0     press RB 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++0     snap gb_15
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++2000  snap gb_end
++500   quit

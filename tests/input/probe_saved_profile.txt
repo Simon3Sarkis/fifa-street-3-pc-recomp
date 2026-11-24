@@ -1,0 +1,13 @@
+# Boot with work/saves/fresh_profile (-Save) and see what follows Start. Snaps every 3 s.
+0      log boot
+13000  snap s13
++0     press START 150
++3000  snap s16
++3000  snap s19
++0     press START 150
++3000  snap s22
++3000  snap s25
++3000  snap s28
++3000  snap s31
++3000  snap s34
++500   quit

@@ -68,6 +68,9 @@ never inside a .pdata function. A second scan after adding them found nothing ne
 4. `70cb34f` input: **test input scripts** (`input_script` setting, `include/rex/input/input_script.h` has
    the format). Timed pad events merged into the guest pad after the window-focus gate (runs work in the
    background); the XInput packet number advances on every scripted change. Off by default.
+6. `d6d5bdb` audio: the XMA next-buffer boundary logged at debug (was a false error).
+7. `3c5ccf5` input: `snap <name>` in input scripts, saving the presenter's guest output as a BMP
+   (`input_script_snap_dir`); a same-tick `quit` runs after the snaps.
 5. input: `set <setting> <value>` in input scripts (changes a setting at a time, e.g. turn on
    `vulkan_debug_log_frame_summaries_remaining` for match frames; see `tests/input/match_gpu_log.txt`).
 
@@ -115,6 +118,27 @@ never inside a .pdata function. A second scan after adding them found nothing ne
    the first minutes are fixed in Xenia by `xma_decoder = "old"`; our log shows
    `XmaContext N old: input offset 16416 exceeds buffer size 16384` in match runs - to check by ear.
 
+6. **2026-11-23, follow-up checks** (all Vulkan + FSI):
+   - **Brightness**: matches the IGN footage in two views of the Samba court. Fence-side view: luminance
+     91 vs 91-96 (wall 68 vs 59-66); goal-end view (IGN Brazil v USA): 49-51 vs 51-53. Green a few %
+     lower in ours in both, within YouTube's colour-conversion error. No "brighter than hardware" problem
+     (Xenia's remark was likely about its D3D12 path).
+   - **All 7 arenas** (`tests/input/arenas/arena_N.txt`, RIGHT N times on Match Settings): Samba, Beach,
+     Riverside, Mediterranean, Shipyard, Oil Rig, Rooftop. All load and play; the day arenas all have the
+     long sun shadows; Rooftop matches IGN's Mexico v England / Juggling goal clips (teal floodlit court,
+     soft shadows). Sheet: `work/snaps/arena1c_snaps.png`. Only Samba and Rooftop have hardware footage.
+   - **Gamebreaker** (`tests/input/gamebreaker_try.txt`, run with `-Save work\saves\fresh_profile`):
+     England filled theirs from our trick spam; greyscale arena, players in colour, foot glow, goal light
+     beams, instant replay, red score bar: same as IGN's Gamebreaker clip
+     (`work/snaps/gamebreaker_compare.png`). Goals 0-1, 0-2, replays, tricks all worked.
+   - **Audio**: the `XmaContext N old: input offset 16416 exceeds buffer size 16384` errors were a
+     legitimate buffer boundary (offset = buffer end + the next packet's 32-bit header); the decoder
+     already handles it like every other buffer switch. Now logged at debug (SDK `d6d5bdb`). Crackle in
+     the first minutes (Xenia's report) still needs a listen.
+   - Reference footage (real hardware, IGN 2008, 720p): 2hWaR0zAdfk (Gamebreaker Action, Samba),
+     0D8-gIXXK_A (Brazil v USA, Samba goal end), Bsa9VGKAhc8 (Mexico v England, Rooftop), eKe51Xp9Bzc
+     (Juggling goal, Rooftop). 4K/60 uploads are emulator footage: don't use them.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
@@ -130,8 +154,15 @@ audio check by ear, saves reloaded, 2-player.
   `python tools/sheet.py <n>` makes a contact sheet of a run's screenshots.
 - Scripts: `tests/input/press_start.txt`, `to_main_menu.txt`, `play_now.txt`. Starting saves:
   `work/saves/fresh_profile` (profile created, autosave on).
-- **Timing is wall-clock ms.** One run of the same script (menu3) fell a step behind and ended back on
-  PRESS START; leave ~6 s between menu presses. If this keeps biting, switch the clock to guest frames.
+- **Timing is wall-clock ms.** About 1 run in 5 of the fresh-profile route ended back on PRESS START:
+  the legal screen lasts to ~16 s and PRESS START appears at ~19 s, so the old first Start (13 s) always
+  lands on the legal screen and everything depends on later presses. **Prefer `-Save
+  work\saves\fresh_profile` and one Start at 20 s** (title -> main menu, no profile dialogs; see
+  `gamebreaker_try.txt`). Leave ~5-6 s between menu presses.
+- **Frames: use `snap <name>` in scripts** (SDK `3c5ccf5`): saves the game's own output to
+  `work/snaps/<run>/<name>.png`. Screen copies (`-At`) break whenever another window covers the game.
+  `python tools/snapsheet.py <run> [<run>...]` makes a sheet.
+- Help cards pause the match until A; to turn them off: B, UP (to DISABLE), A.
 - Screenshots of an already running game: `& .\tools\snap.ps1 -NoLaunch -At 5,20`.
 
 ## Tried and wrong

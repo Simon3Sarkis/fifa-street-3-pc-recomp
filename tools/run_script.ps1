@@ -28,7 +28,11 @@ $cache = Join-Path $root 'work\cache'; New-Item -ItemType Directory -Force $cach
 
 $before = Get-ChildItem (Join-Path $bin 'logs') -Filter *.log -ErrorAction SilentlyContinue | ForEach-Object FullName
 # Start-Process joins arguments with spaces, so a path with spaces needs its own quotes.
-$args = @("--input_script=`"$scriptPath`"", "--user_data_root=`"$userData`"", "--cache_root=`"$cache`"") + $GameArgs
+# `snap <name>` lines in the script save the game's own frames to work\snaps\<Name>\<name>.bmp
+# (converted to .png at the end). They can't be covered by other windows, unlike -At screen copies.
+$snapDir = Join-Path $root "work\snaps\$Name"
+$args = @("--input_script=`"$scriptPath`"", "--user_data_root=`"$userData`"", "--cache_root=`"$cache`"",
+          "--input_script_snap_dir=`"$snapDir`"") + $GameArgs
 Start-Process (Join-Path $bin 'fifastreet3.exe') -WorkingDirectory $bin -ArgumentList $args
 Start-Sleep -Seconds 1
 "run $Name"
@@ -46,4 +50,7 @@ if (-not $log) { $log = Get-ChildItem (Join-Path $bin 'logs') -Filter *.log | So
 $runs = Join-Path $root 'work\runs'; New-Item -ItemType Directory -Force $runs | Out-Null
 Copy-Item $log.FullName (Join-Path $runs "$Name.log") -Force
 "log: work\runs\$Name.log"
+if (Test-Path $snapDir) {
+  python -c "import glob,os,sys;from PIL import Image;fs=glob.glob(os.path.join(sys.argv[1],'*.bmp'));[(Image.open(f).save(f[:-4]+'.png'),os.remove(f)) for f in fs];print(f'snaps: {len(fs)} in work/snaps/{os.path.basename(sys.argv[1])}')" $snapDir
+}
 Select-String -Path $log.FullName -Pattern 'input_script|critical|FATAL|\[error\]' | ForEach-Object { $_.Line.Substring([Math]::Min(26, $_.Line.Length)) }
