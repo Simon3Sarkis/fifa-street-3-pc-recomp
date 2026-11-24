@@ -139,6 +139,36 @@ never inside a .pdata function. A second scan after adding them found nothing ne
      0D8-gIXXK_A (Brazil v USA, Samba goal end), Bsa9VGKAhc8 (Mexico v England, Rooftop), eKe51Xp9Bzc
      (Juggling goal, Rooftop). 4K/60 uploads are emulator footage: don't use them.
 
+7. **2026-11-23, 1080p + iGPU baseline** (owner's decision: 1080p is the 1:1 resolution; 60 FPS is
+   measured on the integrated AMD GPU first, then the Steam Deck). Config: `resolution = '1080p'` (the
+   video mode the game reads; it renders a native 1920x1080 frontbuffer), `vulkan_device = 1`,
+   `log_frame_stats = true` (new SDK line, `[frame stats]` every 2 s, measured at guest swaps; perf
+   counters stay off, they cost ~6% CPU). Picture at 1080p checked: shadows and shading intact
+   (`work/snaps/gputrace1/traced.png`).
+
+   The iGPU is the **Ryzen 9 9950X3D's 2-CU RDNA 2 Radeon** (about a third of a Steam Deck's 8 CUs), with
+   no display attached, so every frame is also copied to the 4090's screen.
+
+   `tests/input/perf_match.txt` with `-Save work\saves\fresh_profile`, summarised by
+   `python tools/frame_stats.py work/runs/<run>.log`:
+
+   | iGPU run | main menu | match | match windows at 60 |
+   |---|---|---|---|
+   | **1080p, FSI (current, 1:1)** | 39.3 | **37.9** | 0% |
+   | 720p, FSI | 38.7 | 59.2 | 93% |
+   | 1080p, host render targets | 31.2 | 17.4 | 0% |
+   | 1080p, FSI, vsync off | 35.5 | 5.4 | 0% |
+
+   - The match is **GPU pixel-bound**: 720p holds 60, 1080p (2.25x the pixels) takes ~26.6 ms a frame.
+     Needed: ~40% less GPU time per frame at 1080p.
+   - FSI is the fast path here: host render targets are 2x slower (EDRAM ownership copies around the
+     game's predicated tiling).
+   - vsync off is not a measurement: the 1000 Hz vblank breaks the game's pacing (5 FPS).
+   - The **main menu is 39 FPS at both resolutions**: a fixed cost, separate from the match.
+   - GPU timestamp trace (`tests/input/perf_gputrace.txt`, `vulkan_gpu_timestamp_trace_frames`): per-draw
+     queries inflate a frame to ~155 ms, so only shares count: nearly all time is "Main" (FSI colour/depth
+     draws); one interval is ~1/3 of the frame. The pause menu adds full-size resolves (CopyResolveFull32).
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

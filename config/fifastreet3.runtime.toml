@@ -19,6 +19,17 @@ vsync = true
 gpu_backend = 'vulkan'
 render_target_path_vulkan = 'fsi'
 
+# Video mode the game reads (VdQueryVideoMode): 1080p, as a 360 set to 1080p output. FIFA Street 3
+# renders natively at 1920x1080 then (Digital Foundry; Xenia report #2154). Owner's choice, 2026-11-23.
+resolution = '1080p'
+
+# GPU: the integrated AMD Radeon is the 60 FPS baseline (then the Steam Deck), not the RTX 4090.
+# Index from the log's "Available Vulkan physical devices" list on this PC: 0 = RTX 4090, 1 = AMD.
+vulkan_device = 1
+
+# Every 2 s: "[frame stats] N fps, avg, worst, >33ms, frontbuffer WxH" in the log.
+log_frame_stats = true
+
 # The console's own resolution: the SDK defaults to 2x.
 draw_resolution_scale_x = 1
 draw_resolution_scale_y = 1
