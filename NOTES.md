@@ -169,6 +169,29 @@ never inside a .pdata function. A second scan after adding them found nothing ne
      queries inflate a frame to ~155 ms, so only shares count: nearly all time is "Main" (FSI colour/depth
      draws); one interval is ~1/3 of the frame. The pause menu adds full-size resolves (CopyResolveFull32).
 
+8. **2026-11-23, where the frame time goes** (1080p FSI unless noted; `vulkan_gpu_timestamp_buckets` gives a
+   120-frame average with few queries, so it barely disturbs the GPU; per-draw tracing does).
+
+   | Run | match FPS | GPU frame span | biggest parts |
+   |---|---|---|---|
+   | AMD iGPU 1080p | 39 | 24.9 ms | FSI draws (Main), Copy, resolves, SMUpload ~8 ms; ResolveGap only 4.9 ms |
+   | RTX 4090 1080p | 28 | 28.3 ms | **ResolveGap 14.9 ms**, Main 10.1 ms |
+   | RTX 4090 1080p host RTs | 29 | 28.3 ms | Main 12 ms (+ gaps) |
+   | RTX 4090 720p | 31 | 26.8 ms | **ResolveGap 17.7 ms**, Main 6.2 ms |
+
+   - **iGPU: really GPU-bound** (~20 ms of the 25 are work). 60 FPS needs a third less GPU time.
+   - **4090: idle, not busy.** After resolves the GPU waits ~15-18 ms a frame for the next commands, at any
+     resolution and on both render-target paths: a CPU/GPU round trip somewhere in the resolve handling. It
+     would hit every NVIDIA player, and probably part of the iGPU's time too. Top suspect to fix first.
+   - CPU (`tools/sample_threads.py`, IP sampling + llvm-symbolizer on the PDB): the GPU command thread is ~5%
+     busy. A guest thread sits at 100% in the game's D3D "wait for GPU fence" spin loop (sub_82505678,
+     `mr r31,r31` spin hints) - it waits, it doesn't work. The game logic thread is the other 100% thread.
+   - Dead ends (iGPU): `native_2x_msaa=false` (5 FPS), `occlusion_query_enable=false` (4.5 FPS),
+     `vsync=false` (5 FPS) - all three push the game into some very heavy path; not 1:1 anyway.
+   - Per-draw trace (`vulkan_gpu_timestamp_per_draw`, `tools/gpu_trace.py`): the arena (vs 997005999EE7A298,
+     4 pixel shaders, ~680 draws across the screen tiles) is ~75% of the draw time; shares only, because
+     per-draw timestamps overlap.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

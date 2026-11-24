@@ -1,0 +1,21 @@
+# GPU timestamp trace of 3 match frames (Vulkan). Use -Save work\savesresh_profile.
+0      log boot
+20000  press START 150  # title
++5000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     stick L 0.6 0.3 8000
++8000  snap traced
++0     set vulkan_debug_frame_summary_interval_frames 1
++0     set vulkan_debug_log_frame_summaries_remaining 3
++0     set vulkan_debug_log_resolve_decisions_remaining 40
++3000  log phase: menu_trace
++0     press START 150  # pause menu (2D over the frozen match)
++3000  snap pause
++0     set vulkan_debug_log_frame_summaries_remaining 2
++2000  quit
