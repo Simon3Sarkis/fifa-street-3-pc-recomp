@@ -7,7 +7,7 @@ HZ=$(getconf CLK_TCK)
 D=$(for d in /sys/class/drm/card*/device; do [ -f "$d/pp_dpm_sclk" ] && echo "$d" && break; done)
 H=$(ls -d "$D"/hwmon/hwmon* 2>/dev/null | head -1)
 CT=$(for h in /sys/class/hwmon/hwmon*; do [ "$(cat "$h/name" 2>/dev/null)" = k10temp ] && echo "$h/temp1_input" && break; done)
-for i in $(seq 1 30); do P=$(pgrep -x fifastreet3.exe | head -1); [ -n "$P" ] && break; sleep 2; done
+for i in $(seq 1 30); do P=$(pgrep -x 'fifastreet3(\.exe)?' | head -1); [ -n "$P" ] && break; sleep 2; done
 [ -n "$P" ] || exit 0
 snap() {  # tid ticks cpu name
   for t in /proc/$P/task/*; do

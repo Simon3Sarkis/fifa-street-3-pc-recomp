@@ -1,0 +1,10 @@
+# GPU timeline of two main-menu frames (deterministic scene, for comparing builds draw by draw).
+# Use -Save work\saves\fresh_profile (on the Deck: SAVE=1).
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++5000  snap main_menu
++0     set vulkan_gpu_timestamp_per_draw true
++0     set vulkan_gpu_timestamp_trace_frames 2
++3000  log phase: end
++0     quit

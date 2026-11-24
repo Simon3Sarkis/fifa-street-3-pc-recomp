@@ -387,6 +387,35 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     clock (the 15 W budget; the owner's TDP / GPU clock settings) - next steps: GPU-side profiling
     (RADV thread trace) of the resolve -> texture reload path and RT transfers.
 
+16. **2026-11-24, native Linux build for the Steam Deck (no Proton).** Built in WSL2 Ubuntu 24.04 (Clang
+    20.1.8, preset `linux-amd64-relwithdebinfo` with `-march=x86-64-v3`), sources synced to `/root/fs3`;
+    `tools/make_deck_package_linux.sh` -> `dist/fifastreet3-deck-linux`, on the Deck in
+    `~/fifastreet3-native` (uses the Proton package's `game/` and saves). Run with
+    `RUN=run_native.sh DEST=fifastreet3-native tools/deck/remote_run.sh ...`; `bench_ab.sh` takes
+    `B_ENV=...` to compare against Proton. Runs on SteamOS 3.9 as is (glibc 2.43, all libraries present);
+    codegen on Linux gives byte-identical C++; boots, menus, matches, quits cleanly.
+
+    Native-only problems found and fixed in the SDK:
+    - **UI paints unthrottled** (no vblank tick source off Windows): UI drawers re-request a paint after
+      every paint, the UI thread re-presented flat out (~52% of a core). `ui_tick_rate_hz` (60).
+    - **POSIX multi-object waits spun:** the poll sleep was truncated to whole milliseconds, so in the
+      1 ms alertable slices it was always `sleep_for(0)` - the audio worker sat at ~70% of a core. Fixed
+      (sub-ms sleep, alertable slice rounded up). Audio still exactly real time (187.5 frames/s).
+    - **CPU clock trap** natively too: the long CP spin now applies on Linux as under Proton.
+    - Packaging took a stale GPU plugin (staged copy only refreshed when the binary relinks): the
+      package now takes the SDK's own `out/linux-amd64` libraries.
+
+    **Still slower than Proton:** full matches, interleaved: native 27.6 vs Proton 55.1 FPS (before the
+    fixes); after them native holds a locked 30 in the paused scene. Ruled out: shaders (SPIR-V
+    identical apart from constant order; an earlier "flush-to-zero" difference was the PC's NVIDIA dump),
+    device features, memory types/heaps, Mesa environment, present mode (mailbox: same), and per-draw
+    GPU cost (main menu: same frame structure, same costs on both). What differs: native match frames
+    contain one or two GPU stalls of ~10-12 ms *inside single draws* (a full-screen pass: 36 us under
+    Proton, up to 10.4 ms natively) - the GPU doing something else, most likely the compositor: the
+    native window is an X11 client of gamescope launched outside Steam. Gamescope's WSI layer
+    (`ENABLE_GAMESCOPE_WSI=1`) hangs at startup when the process isn't Steam-launched. Next: launch the
+    native build through Steam (non-Steam game shortcut) so gamescope treats it as the focused game.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

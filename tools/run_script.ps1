@@ -6,7 +6,7 @@
 # Screenshots go to work\snaps\<Name>_<t>s.png (t = seconds since the game started); the game's log
 # is copied to work\runs\<Name>.log.
 param([Parameter(Mandatory = $true)][string]$Script, [int[]]$At = @(), [string]$Name = '',
-      [int]$Timeout = 300, [string]$Save = '', [string[]]$GameArgs = @())
+      [int]$Timeout = 300, [string]$Save = '', [string[]]$GameArgs = @(), [string]$Cache = '')
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent
@@ -24,7 +24,7 @@ $userData = Join-Path $root "work\userdata\$Name"
 if (Test-Path $userData) { throw "user data folder $userData exists; pick another -Name" }
 New-Item -ItemType Directory -Force $userData | Out-Null
 if ($Save) { Copy-Item (Join-Path (Resolve-Path $Save).Path '*') $userData -Recurse -Force; "save: $Save" }
-$cache = Join-Path $root 'work\cache'; New-Item -ItemType Directory -Force $cache | Out-Null
+$cache = if ($Cache) { $Cache } else { Join-Path $root 'work\cache' }; New-Item -ItemType Directory -Force $cache | Out-Null
 
 $before = Get-ChildItem (Join-Path $bin 'logs') -Filter *.log -ErrorAction SilentlyContinue | ForEach-Object FullName
 # Start-Process joins arguments with spaces, so a path with spaces needs its own quotes.

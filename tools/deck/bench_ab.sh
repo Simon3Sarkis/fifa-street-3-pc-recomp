@@ -3,6 +3,8 @@
 # between batches (it was 2-3 FPS) hits both sides equally.
 # Usage: tools/deck/bench_ab.sh <label> <pairs> "<A flags>" "<B flags>"
 #   SCRIPT=tests/input/perf_match.txt PHASE=match (defaults), like bench.sh.
+#   A_ENV / B_ENV: environment for that side's remote_run.sh, e.g.
+#   B_ENV="RUN=run_native.sh DEST=fifastreet3-native" to compare the native Linux build with Proton.
 # Prints each run (FPS, 60 held, scene size, mean CPU MHz / GPU MHz / APU W from the monitor), then
 # per side the mean and spread, and the mean of the paired differences B - A.
 set -u
@@ -12,9 +14,9 @@ SCRIPT="${SCRIPT:-tests/input/perf_match.txt}"
 PHASE="${PHASE:-match}"
 for i in $(seq 1 "$PAIRS"); do
   # shellcheck disable=SC2086
-  SAVE=1 bash tools/deck/remote_run.sh "${LABEL}_a$i" "$SCRIPT" --vulkan_gpu_timestamp_buckets=true $A_FLAGS > "work/${LABEL}_a$i.out" 2>&1
+  env SAVE=1 ${A_ENV:-} bash tools/deck/remote_run.sh "${LABEL}_a$i" "$SCRIPT" --vulkan_gpu_timestamp_buckets=true $A_FLAGS > "work/${LABEL}_a$i.out" 2>&1
   # shellcheck disable=SC2086
-  SAVE=1 bash tools/deck/remote_run.sh "${LABEL}_b$i" "$SCRIPT" --vulkan_gpu_timestamp_buckets=true $B_FLAGS > "work/${LABEL}_b$i.out" 2>&1
+  env SAVE=1 ${B_ENV:-} bash tools/deck/remote_run.sh "${LABEL}_b$i" "$SCRIPT" --vulkan_gpu_timestamp_buckets=true $B_FLAGS > "work/${LABEL}_b$i.out" 2>&1
 done
 python - "$LABEL" "$PAIRS" "$PHASE" <<'EOF'
 import re, statistics, subprocess, sys
