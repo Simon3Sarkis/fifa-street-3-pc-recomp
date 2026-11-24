@@ -1,0 +1,245 @@
+# perf_match with per-frame timing logged during play (debug_log_frame_timing; add --vulkan_gpu_timestamp_buckets=true for the GPU span).
+# play input (running + trick flicks, so the camera and players move), snaps along the way.
+# Read the [frame stats] lines (log_frame_stats) from the log.
+# Title -> main menu, robust to load time (PC ~19 s, Deck under Proton later): wait for the title's
+# FIFA logo pixel, then press START every 1.5 s until the MAIN MENU heading pixel shows.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++0     log phase: main menu
++1000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off: B, UP (DISABLE), A
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     set debug_log_frame_timing 5000
++0   stick R 1 0 150
++0     stick L 0.6 0.3 6000
++0     snap match_0
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L -0.6 0.2 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++0     snap match_1
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.6 0.3 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.6 -0.3 6000
++0     snap match_2
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L -0.6 0.2 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     stick L 0.2 0.6 6000
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     press A 120
++0     snap match_3
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     stick L 0.6 0.3 6000
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++0     press A 120
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++0     stick L 0.6 -0.3 6000
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++0     press A 120
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++300   stick R -1 0 150
++300   stick R 0 -1 150
++300   stick R 0.7 0.7 150
++300   stick R -0.7 0.7 150
++300   stick R 1 0 150
++300   stick R 0 1 150
++500   log phase: end
++0     quit
