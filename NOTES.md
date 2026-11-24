@@ -365,6 +365,27 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     frame on NVIDIA); it now applies under Proton only (`wait_reg_mem_spin_wine_us`), PC locked at 60
     over a whole match again. Known issue: an occasional hang at quit under Proton (one in ~40 runs
     tonight, also seen before these changes): the process stays until killed.
+    `wait_reg_mem_spin_wine_adaptive` (long spin only after a slow frame): +0.5 +- 3.4, not kept.
+
+    **All arenas on the Deck** (final config, 2026-11-24 03:10, `tests/input/arenas`, ~20 s of play each;
+    Samba from `perf_match`):
+
+    | Arena (RIGHT x N from Samba) | match FPS | 60 held |
+    |---|---|---|
+    | Samba (0) | 55-59 | 45-79% |
+    | 1 | 58.7 | 33% |
+    | 2 | 56.9 | 44% |
+    | 3 | **31.2** | 0% |
+    | 4 | **45.5** | 22% |
+    | 5 | 55.2 | 44% |
+    | 6 | 59.3 | 80% |
+
+    Arena 3 is GPU-bound, not a clock trap: CPU at 3.35 GHz, the GPU at its usual ~1040 MHz while busy
+    (the 4 s samples alternate idle 200 MHz / busy 1040 MHz), and the game's own drawing alone takes
+    11.2 ms a frame there (6.8 on Samba) before the emulation overheads (transfers, pass entries,
+    skinning drains, uploads: ~2-3 ms each). A locked 60 there needs ~20%+ less GPU work or more GPU
+    clock (the 15 W budget; the owner's TDP / GPU clock settings) - next steps: GPU-side profiling
+    (RADV thread trace) of the resolve -> texture reload path and RT transfers.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
