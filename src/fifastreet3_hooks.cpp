@@ -25,6 +25,24 @@
 #include <windows.h>
 #endif
 
+#if defined(__linux__)
+#include <sys/prctl.h>
+#include <cstdlib>
+namespace {
+// Profiling aid for the native Linux build: with FS3_ALLOW_PTRACE=1 the process lets any process of
+// the same user attach (SteamOS has kernel.yama.ptrace_scope = 1, which otherwise allows only an
+// ancestor), so eu-stack / gdb can sample a running game. Off unless the variable is set.
+struct AllowPtraceIfRequested {
+  AllowPtraceIfRequested() {
+    const char* value = std::getenv("FS3_ALLOW_PTRACE");
+    if (value && value[0] == '1') {
+      prctl(PR_SET_PTRACER, PR_SET_PTRACER_ANY, 0, 0, 0);
+    }
+  }
+} allow_ptrace_if_requested;
+}  // namespace
+#endif
+
 REXCVAR_DEFINE_INT32(fs3_worker_idle_spin_us, 50, "FIFA Street 3",
                      "Job worker threads: keep polling an empty job list this long before sleeping");
 REXCVAR_DEFINE_INT32(fs3_worker_idle_sleep_us, 100, "FIFA Street 3",

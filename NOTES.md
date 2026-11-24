@@ -405,16 +405,23 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     - Packaging took a stale GPU plugin (staged copy only refreshed when the binary relinks): the
       package now takes the SDK's own `out/linux-amd64` libraries.
 
-    **Still slower than Proton:** full matches, interleaved: native 27.6 vs Proton 55.1 FPS (before the
-    fixes); after them native holds a locked 30 in the paused scene. Ruled out: shaders (SPIR-V
-    identical apart from constant order; an earlier "flush-to-zero" difference was the PC's NVIDIA dump),
-    device features, memory types/heaps, Mesa environment, present mode (mailbox: same), and per-draw
-    GPU cost (main menu: same frame structure, same costs on both). What differs: native match frames
-    contain one or two GPU stalls of ~10-12 ms *inside single draws* (a full-screen pass: 36 us under
-    Proton, up to 10.4 ms natively) - the GPU doing something else, most likely the compositor: the
-    native window is an X11 client of gamescope launched outside Steam. Gamescope's WSI layer
-    (`ENABLE_GAMESCOPE_WSI=1`) hangs at startup when the process isn't Steam-launched. Next: launch the
-    native build through Steam (non-Steam game shortcut) so gamescope treats it as the focused game.
+    - **The big one - write-watch faults parsed `/proc/self/maps`:** natively the game ran at ~28-30
+      FPS (interleaved full matches: 27.6 vs Proton 55.1). Ruled out on the way: shaders (SPIR-V
+      identical apart from constant order), device features, memory types, Mesa environment, present
+      mode, the compositor (a Steam launch didn't help), per-draw GPU cost (main menu identical). The
+      GPU timeline showed ~10 ms "stalls inside draws" - really GPU idle across a submission gap.
+      Stack samples (`tools/deck/stacksample.sh`, eu-stack; the game opts in to being traced with
+      `FS3_ALLOW_PTRACE=1` because SteamOS has `ptrace_scope = 1`) showed the render thread a third
+      of the time in `MMIOHandler::ExceptionCallback -> QueryProtect -> FindEntryForAddress ->
+      getline(/proc/self/maps)`: every guest write to a GPU-watched page parsed the whole maps file.
+      Fixed in the SDK with an interval map of the protections the memory layer sets. Native paused
+      scene 30 -> 59.8 FPS, match 60 held 100%, main draws 17.7 -> 7.1 ms (= Proton).
+
+    **Steam launch:** the native build is in the Deck's Steam library as a non-Steam game
+    (`tools/deck/steam_launch.sh`, added via `steam://addnonsteamgame`, app id 3747935355); launched
+    from Steam it starts the game, gamescope enables its WSI layer (1280x720 mailbox swapchain). For a
+    scripted run through Steam, write `steam_next_run` (see the script) and open
+    `steam://rungameid/16097259777280704512`. Launched outside Steam, `ENABLE_GAMESCOPE_WSI=1` hangs.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
