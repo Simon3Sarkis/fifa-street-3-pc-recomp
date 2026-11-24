@@ -1,0 +1,25 @@
+# Deterministic perf benchmark: pause a Samba match (the game keeps rendering the frozen scene under
+# the pause menu, same draws every frame) and measure 30 s. Phase 'pause' in tools/frame_stats.py.
+# Use -Save work\saves\fresh_profile. Check with tools/check_match.py <run> (uses snap match_1).
+# Title -> main menu, robust to load time (PC ~19 s, Deck under Proton later): wait for the title's
+# FIFA logo pixel, then press START every 1.5 s until the MAIN MENU heading pixel shows.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++0     log phase: main menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  log phase: match
++0     stick L 0.6 0.3 3000
++4000  snap match_1     # HUD visible: tools/check_match.py validates the run from this
++1000  press START 150  # pause
++2000  snap paused
++0     log phase: pause
++30000 log phase: end
++0     quit

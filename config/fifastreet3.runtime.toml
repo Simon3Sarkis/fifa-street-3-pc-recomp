@@ -25,6 +25,19 @@ render_target_path_vulkan = 'host'
 # set to 1080p (Digital Foundry; Xenia report #2154): `--resolution=1080p` for that.
 resolution = '720p'
 
+# GPU emulation work cuts for the Steam Deck (2026-11-23). Each was checked 1:1 by freezing a match
+# under the pause menu (the scene keeps rendering), snapping it, switching the option on mid-run and
+# snapping again: pixel-identical (tests/input/pause_ab*.txt, tools/imgdiff.py).
+# - Skip the shared memory barrier (which ends the render pass) around the game's GPU skinning draws
+#   unless a draw really reads or overwrites memory written since the last barrier: render passes
+#   per frame 182 -> 82 in the paused scene.
+vulkan_memexport_barrier_elision = true
+# - Resolve single-sampled 32bpp targets in one dispatch, defer resolve clears into the next render
+#   pass, reuse unchanged texture descriptor sets.
+vulkan_direct_resolve_fast32 = true
+vulkan_deferred_resolve_clears = true
+vulkan_reuse_transient_texture_descriptors = true
+
 # GPU: automatic (the Deck has one). On a PC with two GPUs, `vulkan_device = N` picks one; the log
 # lists them under "Available Vulkan physical devices".
 

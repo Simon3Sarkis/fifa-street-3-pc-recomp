@@ -34,6 +34,8 @@ if [ -n "$SCRIPT" ]; then
 fi
 BEFORE=$(ls -1 logs 2>/dev/null)
 echo "run $NAME: $(date +%T)"
+rm -f "runs/$NAME.mon.txt"
+bash tools/deck/monitor.sh "runs/$NAME.mon.txt" 4 &
 "$PROTON" run "$PKG/fifastreet3.exe" "${ARGS[@]}" "$@" > "runs/$NAME.proton.txt" 2>&1
 echo "exit $? at $(date +%T)"
 LOG=$(ls -1t logs/*.log 2>/dev/null | head -1)

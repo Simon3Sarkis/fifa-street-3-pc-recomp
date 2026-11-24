@@ -10,3 +10,4 @@
 *.xex
 *.log
 /tools/deck/deck.local
+/tools/winsampler/*.exe
