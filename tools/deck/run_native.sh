@@ -28,7 +28,10 @@ if [ -n "$SCRIPT" ]; then
 fi
 echo "run $NAME (native): $(date +%T)"
 rm -f "runs/$NAME.mon.txt"
-bash tools/deck/monitor.sh "runs/$NAME.mon.txt" 4 &
+# NO_MONITOR=1: skip the thread monitor (its /proc reads every few s can stall the game).
+[ -z "${NO_MONITOR:-}" ] && bash tools/deck/monitor.sh "runs/$NAME.mon.txt" 4 &
+# PIN_CP=1: give the GPU command thread a core of its own once the match starts.
+[ -n "${PIN_CP:-}" ] && bash tools/deck/pin_threads.sh match > "runs/$NAME.pin.txt" 2>&1 &
 START=$(date +%s)
 "$PKG/fifastreet3" "${ARGS[@]}" "$@" > "runs/$NAME.stdout.txt" 2>&1
 echo "exit $? at $(date +%T)"
