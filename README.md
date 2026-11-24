@@ -32,6 +32,27 @@ third_party\rexglue-sdk\out\win-amd64\rexgluerd.exe --force codegen fifastreet3_
 & .\tools\iterate.ps1 -SkipCodegen -SkipBuild -RunSeconds 60
 ```
 
+## Steam Deck (Proton)
+
+The baseline target is the Steam Deck at 1280x720, 60 FPS. The Windows build runs there under Proton
+Experimental; `config/fifastreet3.runtime.toml` carries the Deck settings (each with what it fixes and
+how it was measured), and settings that only help under Proton apply only there.
+
+```powershell
+# On the PC: portable folder with the exe, DLLs, VC++ runtime and config
+& .\tools\make_deck_package.ps1
+```
+```bash
+# From Git Bash: copy it (and once, the game files) to the Deck over SSH, then run a test script there
+bash tools/deck/push.sh --with-game
+SAVE=1 bash tools/deck/remote_run.sh m1 tests/input/perf_match.txt
+# Benchmarks: repeated runs, or interleaved A/B with paired differences
+SCRIPT=tests/input/perf_match.txt PHASE=match bash tools/deck/bench.sh m 5
+bash tools/deck/bench_ab.sh ab 4 "" "--some_option=true"
+```
+
+Status and what limited it: NOTES.md entry 15.
+
 The SDK (`third_party/rexglue-sdk`) is the private repo `fifa-street-3-rexglue-sdk`, branch
 `fifastreet3`: the rexglue-skate3 fork (v0.10.0) plus this port's changes, listed in NOTES.md.
 

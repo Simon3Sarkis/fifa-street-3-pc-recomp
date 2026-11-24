@@ -347,6 +347,25 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     (one skinned-character vertex shader ~1M vertices a frame over ~290 draws). What's left is GPU clock,
     i.e. CPU power.
 
+    Interleaved A/B results (4 pairs of full matches each, paired difference B - A):
+    | B (vs the defaults)                                        | B - A          | kept? |
+    |------------------------------------------------------------|----------------|-------|
+    | `wait_reg_mem_spin_pause` (pause-hint spin instead of yield) | -4.3 +- 1.2 FPS | no (GPU clock lower) |
+    | `vblank_wine_precise_sleep` (precise vblank sleep, 250 us margin) | +1.3 +- 3.2 | no (noise) |
+    | `vulkan_skip_inert_no_pixel_draws` + `vulkan_reuse_unchanged_draw_bindings` | -0.7 +- 1.2 | no |
+
+    **The frozen-frame pixel test is blind to memexport.** `vulkan_skip_inert_no_pixel_draws` passed it
+    (0 px) while skipping the GPU-skinning draws (no pixel shader, depth off): a paused pose never
+    changes, so stale skinned vertices look identical. Fixed in the SDK (memexport draws are never
+    inert); check the memexport draw count too (`debug_log_memexport_remaining`) - 96 a frame before and
+    after. Barrier elision was checked by construction and counters (one read-after-write barrier per
+    skinning draw remains) plus live-play snaps.
+
+    **PC check:** the long CP spin made the 4090 PC drop to 40 FPS (`vkQueueSubmit` blocking ~12 ms a
+    frame on NVIDIA); it now applies under Proton only (`wait_reg_mem_spin_wine_us`), PC locked at 60
+    over a whole match again. Known issue: an occasional hang at quit under Proton (one in ~40 runs
+    tonight, also seen before these changes): the process stays until killed.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
