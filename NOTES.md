@@ -417,6 +417,12 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       Fixed in the SDK with an interval map of the protections the memory layer sets. Native paused
       scene 30 -> 59.8 FPS, match 60 held 100%, main draws 17.7 -> 7.1 ms (= Proton).
 
+    **Result (interleaved, full matches with play, 3 pairs):** native 59.9 FPS (60 held 97-100% of
+    2 s windows) vs Proton 52.2 - paired +7.7 +- 0.6. Heavy arenas natively: arena 3 59.2 FPS (Proton
+    31.2), arena 4 59.8 (Proton 45.5). **CORRECTION to entry 15:** arena 3 was not simply GPU-bound -
+    the frame-time difference was host overhead around write-watch faults (Wine's exception path under
+    Proton); natively it holds ~60. The native build is now the faster way to run on the Deck.
+
     **Steam launch:** the native build is in the Deck's Steam library as a non-Steam game
     (`tools/deck/steam_launch.sh`, added via `steam://addnonsteamgame`, app id 3747935355); launched
     from Steam it starts the game, gamescope enables its WSI layer (1280x720 mailbox swapchain). For a
