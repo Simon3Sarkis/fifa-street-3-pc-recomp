@@ -1,9 +1,14 @@
-# Performance run. Use -Save work\savesresh_profile. Menus, then a Samba match with ~60 s of
+# Performance run. Use -Save work\saves\fresh_profile. Menus, then a Samba match with ~60 s of
 # play input (running + trick flicks, so the camera and players move), snaps along the way.
 # Read the [frame stats] lines (log_frame_stats) from the log.
 0      log boot
+# The title's PRESS START shows at 19-25 s depending on load time; a single press at 20 s missed it
+# in 4 of 9 runs (they measured the title screen). Three presses: extra ones on the main menu
+# just advance like A, and every screen up to the match advances.
 20000  press START 150  # title
-+4000  snap main_menu
++3000  press START 150
++3000  press START 150
++3000  snap main_menu
 +0     log phase: main menu
 +1000  press A 150   # PLAY NOW
 +6000  press A 150   # select teams

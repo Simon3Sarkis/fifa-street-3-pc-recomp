@@ -34,6 +34,9 @@ log_frame_stats = true
 draw_resolution_scale_x = 1
 draw_resolution_scale_y = 1
 
-fullscreen = false
+# Exclusive fullscreen, as on a console. In a window the desktop compositor makes every
+# vkQueuePresentKHR block for a display refresh and the driver holds up the GPU emulation's
+# submissions meanwhile: RTX 4090, 1080p match, 29 FPS windowed vs a locked 60 fullscreen (2026-11-23).
+fullscreen = true
 log_level = 'info'
 show_fps_counter = false

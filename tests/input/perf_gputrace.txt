@@ -1,4 +1,4 @@
-# GPU timestamp trace of 3 match frames (Vulkan). Use -Save work\savesresh_profile.
+# Per-draw GPU timestamp trace of 2 match frames and 2 pause-menu frames (Vulkan). Use -Save work\saves\fresh_profile.
 0      log boot
 20000  press START 150  # title
 +5000  press A 150   # PLAY NOW

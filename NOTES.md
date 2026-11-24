@@ -192,6 +192,36 @@ never inside a .pdata function. A second scan after adding them found nothing ne
      4 pixel shaders, ~680 draws across the screen tiles) is ~75% of the draw time; shares only, because
      per-draw timestamps overlap.
 
+9. **2026-11-23, CORRECTION + the idle gap.** Four earlier "match" baselines never reached the match: the
+   route's single Start at 20 s missed the title (PRESS START shows at 19-25 s) and they measured the
+   title screen. Invalid: `perf_amd_1080_fsi` (the "38 FPS" iGPU baseline), `perf_amd_720_fsi`,
+   `gpuspan_amd`, `perf_4090_1080_fsi`, `pq_4090_fs`. The "random 5 FPS mode" was simply the real match.
+   Now: `perf_match.txt` presses Start three times, and `python tools/check_match.py <run>` checks the
+   snaps for the match scoreboard - **run it for every perf number**.
+
+   Verified (all snaps in a match), 1080p:
+
+   | Run | match FPS | GPU frame span |
+   |---|---|---|
+   | RTX 4090, window | 29.4 | 27.6 ms; CP blocked 21.7 ms/frame in submits |
+   | **RTX 4090, fullscreen** | **60.0 (100% of windows at 60)** | 15.4 ms |
+   | AMD iGPU, fullscreen, FSI | 5.2 | 164 ms (Main 160) |
+   | AMD iGPU, fullscreen, host render targets | 19.5 | 49.8 ms |
+
+   **Idle gap (fixed):** CP waits instrumented into `[frame stats]` (wait_reg_mem / no commands / gpu fence /
+   swap / submit [replay, queue lock, vkQueueSubmit]). In a window, the presenter's vkQueuePresentKHR
+   blocks one display refresh (~6 ms at 165 Hz, compositor) and presents every refresh; the CP waited
+   ~20 ms/frame for the queue lock (then, with a separate present queue, inside vkQueueSubmit - NVIDIA
+   serialises across queues during present). Exclusive fullscreen: present 0.08 ms, submit 0.2 ms, 60 FPS.
+   **`fullscreen = true` is now the default.** SDK keeps: present from a separate queue
+   (`vulkan_present_separate_queue`, a 2nd graphics queue or another present family), WAIT_REG_MEM polls
+   for `wait_reg_mem_spin_us` (2 ms) before sleeping. Windowed is still slow on NVIDIA (to do: present only
+   new guest frames, not every display refresh).
+
+   **AMD:** FSI is unusable on RDNA 2 (5 FPS; the driver emulates fragment-shader interlock - the Steam Deck
+   is RDNA 2 too). The 1:1 shadows must work on the host-render-target path, which then needs ~3x (49.8 ->
+   16.7 ms GPU). Next.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 

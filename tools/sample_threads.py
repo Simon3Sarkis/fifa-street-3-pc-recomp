@@ -55,6 +55,14 @@ psapi.EnumProcessModules.argtypes = [wt.HANDLE, ctypes.c_void_p, wt.DWORD, ctype
 psapi.GetModuleFileNameExW.argtypes = [wt.HANDLE, ctypes.c_void_p, wt.LPWSTR, wt.DWORD]
 
 
+class MODULEINFO(ctypes.Structure):
+    _fields_ = [('lpBaseOfDll', ctypes.c_void_p), ('SizeOfImage', wt.DWORD),
+                ('EntryPoint', ctypes.c_void_p)]
+
+
+psapi.GetModuleInformation.argtypes = [wt.HANDLE, ctypes.c_void_p, ctypes.c_void_p, wt.DWORD]
+
+
 def find_pid(name):
     out = subprocess.run(['tasklist', '/FI', f'IMAGENAME eq {name}', '/FO', 'CSV', '/NH'],
                          capture_output=True, text=True).stdout
@@ -88,16 +96,19 @@ def thread_cpu_ms(h):
 
 
 def module_base(pid, name):
-    # The exe's load address, via EnumProcessModules.
+    # {load address: (path, image size)} of every module, via EnumProcessModules.
     hp = k32.OpenProcess(PROCESS_QUERY, False, pid)
     mods = (ctypes.c_void_p * 1024)()
     needed = wt.DWORD()
     psapi.EnumProcessModules(hp, mods, ctypes.sizeof(mods), ctypes.byref(needed))
     result = {}
     buf = ctypes.create_unicode_buffer(260)
-    for i in range(needed.value // ctypes.sizeof(ctypes.c_void_p)):
+    info = MODULEINFO()
+    for i in range(min(needed.value // ctypes.sizeof(ctypes.c_void_p), len(mods))):
         psapi.GetModuleFileNameExW(hp, mods[i], buf, 260)
-        result[mods[i] or 0] = buf.value
+        size = info.SizeOfImage if psapi.GetModuleInformation(
+            hp, mods[i], ctypes.byref(info), ctypes.sizeof(info)) else 0
+        result[mods[i] or 0] = (buf.value, size)
     k32.CloseHandle(hp)
     return result
 
@@ -135,16 +146,19 @@ def main():
             h = handles[t]
             if k32.SuspendThread(h) == 0xFFFFFFFF:
                 continue
-            pctx.contents.ContextFlags = CONTEXT_CONTROL
-            if k32.GetThreadContext(h, pctx):
-                samples[t][pctx.contents.Rip] += 1
-            k32.ResumeThread(h)
+            try:  # Ctrl+C here must not leave the game thread suspended.
+                pctx.contents.ContextFlags = CONTEXT_CONTROL
+                if k32.GetThreadContext(h, pctx):
+                    samples[t][pctx.contents.Rip] += 1
+            finally:
+                k32.ResumeThread(h)
         n += 1
         time.sleep(0.001)
     print(f'{n} sampling rounds over {args.seconds:.0f} s')
     import json
-    os.makedirs('work', exist_ok=True)
-    with open('work/samples_raw.json', 'w') as f:
+    work = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'work')
+    os.makedirs(work, exist_ok=True)
+    with open(os.path.join(work, 'samples_raw.json'), 'w') as f:
         json.dump({str(t): {str(k): v for k, v in c.items()} for t, c in samples.items()}, f)
 
     mods = module_base(pid, 'fifastreet3.exe')
@@ -152,7 +166,9 @@ def main():
 
     def module_for(rip):
         base = max((b for b in bases if b <= rip), default=None)
-        return base, mods.get(base, '?')
+        if base is None or rip >= base + mods[base][1]:
+            return None, '?'  # not inside any loaded module
+        return base, mods[base][0]
 
     llvm = r'C:\Program Files\LLVM\bin\llvm-symbolizer.exe'
     for pct, t in busy:
@@ -162,16 +178,23 @@ def main():
         by_module = collections.defaultdict(list)
         for rip, k in c.items():
             base, path = module_for(rip)
-            by_module[(base, path)].append((rip - base if base else rip, k))
+            by_module[(base, path)].append((rip - base if base is not None else rip, k))
         funcs = collections.Counter()
         for (base, path), items in by_module.items():
             mod = os.path.basename(path)
-            if path.lower().endswith(('.exe', '.dll')) and os.path.isfile(llvm) and 'fifastreet3' in mod.lower() \
-                    or 'rex' in mod.lower():
-                offs = [f'0x{o:x}' for o, _ in items]
+            if path.lower().endswith(('.exe', '.dll')) and os.path.isfile(llvm) \
+                    and ('fifastreet3' in mod.lower() or 'rex' in mod.lower()):
+                # Addresses go in on stdin: thousands of them overflow a Windows command line.
+                offs = ''.join(f'0x{o:x}\n' for o, _ in items)
                 out = subprocess.run([llvm, f'--obj={path}', '--functions=short', '--no-inlines',
-                                      '--relative-address'] + offs, capture_output=True, text=True).stdout
-                names = [l for i, l in enumerate(out.split('\n\n')) if l.strip()]
+                                      '--relative-address'], input=offs, capture_output=True,
+                                     text=True).stdout
+                names = [l for l in out.split('\n\n') if l.strip()]
+                if len(names) != len(items):
+                    print(f'warning: {mod}: {len(items)} addresses, {len(names)} symbolized; '
+                          f'left unsymbolized', file=sys.stderr)
+                    funcs[mod] += sum(k for _, k in items)
+                    continue
                 for (o, k), block in zip(items, names):
                     fn = block.strip().split('\n')[0]
                     funcs[f'{mod}!{fn}'] += k

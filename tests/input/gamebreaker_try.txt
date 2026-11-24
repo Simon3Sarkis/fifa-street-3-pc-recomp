@@ -1,4 +1,4 @@
-# Run with -Save work\savesresh_profile. Gamebreaker attempt: title -> main menu -> PLAY NOW ->
+# Run with -Save work\saves\fresh_profile. Gamebreaker attempt: title -> main menu -> PLAY NOW ->
 # match, turn the help cards off (B, UP to DISABLE, A), then ~150 s of right-stick trick flicks while
 # running with the left stick, RB (activate Gamebreaker) every ~5 s, A every ~6 s, snaps every ~10 s.
 0      log boot

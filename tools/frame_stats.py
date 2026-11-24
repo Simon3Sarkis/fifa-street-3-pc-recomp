@@ -9,6 +9,8 @@ import sys
 
 STAT = re.compile(r'\[frame stats\] ([\d.]+) fps, avg ([\d.]+) ms, worst ([\d.]+) ms, >33ms (\d+), '
                   r'frontbuffer (\d+)x(\d+)')
+WAITS = re.compile(r'wait_reg_mem ([\d.]+) ms \(([\d.]+)x\), no commands ([\d.]+) ms \(([\d.]+)x\), '
+                   r'gpu fence ([\d.]+) ms \(([\d.]+)x\)(?:, swap ([\d.]+) ms, submit ([\d.]+) ms \(([\d.]+)x\))?')
 PHASE = re.compile(r'input_script: .*: phase: (\S+)')
 
 for path in sys.argv[1:]:
@@ -27,7 +29,9 @@ for path in sys.argv[1:]:
         if skip:
             skip = False
             continue
-        phases.setdefault(phase, []).append((float(m[1]), float(m[2]), float(m[3])))
+        w = WAITS.search(line)
+        waits = tuple(float(x or 0) for x in w.groups()) if w else None
+        phases.setdefault(phase, []).append((float(m[1]), float(m[2]), float(m[3]), waits))
     print(f'{path}  ({size})')
     for name, rows in phases.items():
         if name in ('boot', 'end') or not rows:
@@ -38,3 +42,9 @@ for path in sys.argv[1:]:
         held = sum(1 for r in rows if r[0] >= 59.5) / len(rows)
         print(f'  {name:10} {fps:5.1f} fps  avg {avg:5.2f} ms  worst {worst:6.1f} ms  '
               f'60-held {held:4.0%}  ({len(rows)} x 2 s)')
+        wr = [r[3] for r in rows if r[3]]
+        if wr:
+            mean = [sum(x[i] for x in wr) / len(wr) for i in range(9)]
+            print(f'  {"":10} CP waits per frame: wait_reg_mem {mean[0]:.2f} ms ({mean[1]:.1f}x), '
+                  f'no commands {mean[2]:.2f} ms ({mean[3]:.1f}x), gpu fence {mean[4]:.2f} ms ({mean[5]:.1f}x), '
+                  f'swap {mean[6]:.2f} ms, submit {mean[7]:.2f} ms ({mean[8]:.1f}x)')
