@@ -266,6 +266,27 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     Odyssey: CPU time saved = GPU clock on the Deck. Next: cut the spinning (guest D3D spin loop, the new
     WAIT_REG_MEM spin), then GPU work per frame (FSI draw cost; host path's transfers/copies).
 
+13. **2026-11-23, fence-wait hook (CPU -> GPU power on the Deck).** `src/fifastreet3_hooks.cpp` overrides
+    sub_82505678 (one step of D3D's BlockOnFence spin, 4 x 8 `or r31,r31,r31` db8cyc hints that are no-ops
+    when recompiled). The original still runs every step (fence compare, hang check, return value
+    unchanged); after `fs3_fence_wait_spin_us` (200) of waiting it sleeps `fs3_fence_wait_sleep_us` (250)
+    via NtDelayExecution (Win32 Sleep and the SDK's Sleep round to 1 ms / yield). Deck results (720p,
+    verified matches, `tools/deck/sample.sh` mid-match):
+
+    | Deck run | match FPS | GPU clock / busy | spinning "STREET" thread |
+    |---|---|---|---|
+    | FSI, before | 34.4 | (not sampled) | 92% (host run) |
+    | FSI + hook | 34.3 | 1600 MHz, 99-100% | 29% |
+    | host RTs, before | 37.4 | 1040 MHz, 99% | 92% |
+    | **host RTs + hook** | **44.9** | 1040 MHz, 84-100% (15-18 W) | 25% |
+    | host RTs + hook, `wait_reg_mem_spin_us=0` | 42.5 | 1040 MHz | 30% |
+
+    FSI is purely GPU-bound on the Deck (~29 ms GPU at full clock): it can't reach 60. The host path can
+    get much closer but needs the shadows fixed (entry 10) and ~25% more. Its GPU profile:
+    Main 9.6 ms, ResolveGap 10.4, PassEntry 4.2, RtTransfer 3.1, CopyDump 2.8, SMUpload 2.3 (per frame,
+    overlapping). Remaining CPU: Main XThread 65%, GPU CP 50%, UI/presenter 39%, 2 XThreads ~30%, audio 20%.
+    WAIT_REG_MEM spin stays on (slightly faster).
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
