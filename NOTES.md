@@ -459,6 +459,12 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     of `GetRegisterInfo`'s big switch on every register write (bookkeeping only). The misses most
     likely come from the GPU at 10 W clocks (~700-850 MHz); next: measure GPU busy per frame
     (per-submission timestamps, excluding idle between submissions) before cutting GPU work.
+    Follow-up: GPU busy per frame is the same in missed and on-time frames; the missed ones are the
+    command thread's own work taking twice as long (preempted or sharing its core). New
+    `gpu_command_thread_cpu` (Linux) gives it a core: missed frames per match 10/11/9 -> 5/2/2, config
+    CPU 0. CPU 0 vs CPU 6 (another core, in case CPU 0's housekeeping/interrupts were the cause),
+    interleaved, 3 pairs: 5/9/4 vs 7/5/12 missed per ~3600 frames, no difference; interrupts per CPU
+    are even. The rest still come every ~5 s (multiples of 299 frames) with the thread off-CPU ~20 ms.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
