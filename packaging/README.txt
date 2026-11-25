@@ -22,12 +22,13 @@ Starting it
 Options
 -------
 Before the game: the launcher screen. In the game: F1, Esc, or Start + Back together on the
-controller. Display, screen mode, refresh rate, vsync, game resolution (720p / 1080p), render scale
-(1x-4x). The frame rate stays at 60, as on the console. Game resolution, render scale and vsync
-apply the next time the game starts.
+controller. Display, screen mode, refresh rate, vsync, resolution (1280 x 720, 1920 x 1080,
+2560 x 1440, 3840 x 2160). The frame rate stays at 60, as on the console. Resolution and vsync apply
+the next time the game starts. The game's own modes are 720p and 1080p; 1440p and 4K draw them
+larger.
 
-Steam Deck: keep render scale at 1x. Measured on the Deck at 720p: 60 FPS, and about 99.8% of
-frames on time even at a 10 W TDP.
+Steam Deck: keep the resolution at 1280 x 720. Measured on the Deck: 60 FPS with 99.9% of frames on
+time at a 15 W TDP (a short hitch about 3 times a match in the heaviest scenes); 99.6% at 10 W.
 
 Your settings are in fifastreet3.user.toml, your saves in userdata\, logs in logs\. Unpacking a
 new version over this folder keeps all three.

@@ -23,11 +23,12 @@ Or with **RecompLauncher**: the release folder holds a `recomplauncher.json`; Re
 the game and starts it.
 
 **Options** in the game: **F1**, **Esc**, or **Start + Back** together on the controller: display,
-screen mode (windowed / borderless / exclusive), refresh rate, vsync, game resolution (720p / 1080p)
-and render scale (1x-4x). The frame rate stays at 60, as on the console.
+screen mode (windowed / borderless / exclusive), refresh rate, vsync, and resolution: 1280 x 720,
+1920 x 1080, 2560 x 1440 or 3840 x 2160 (the game's own modes are 720p and 1080p; 1440p and 4K draw
+them larger). The frame rate stays at 60, as on the console.
 
-**Steam Deck:** the native Linux build runs at 60 FPS at 720p (about 99.8% of frames on time even at a
-10 W TDP). Keep render scale at 1x. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
+**Steam Deck:** the native Linux build runs at 60 FPS at 720p, with 99.9% of frames on time at a 15 W
+TDP (a short hitch about 3 times a match in the heaviest scenes) and 99.6% at 10 W. Keep the resolution at 1280 x 720. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
 
 Your settings (`fifastreet3.user.toml`), saves (`userdata/`) and logs (`logs/`) stay next to the
 program; unpacking a new version over the old folder keeps them.
