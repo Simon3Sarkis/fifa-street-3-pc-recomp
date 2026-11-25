@@ -1,14 +1,14 @@
 #!/bin/bash
 # Copy the Deck package to the Steam Deck over SSH (run on the PC from Git Bash).
 # Usage: tools/deck/push.sh [--with-game]
-#   DECK=deck@<ip>      the Deck (default from tools/deck/deck.local, git-ignored, or deck@192.168.1.82)
+#   DECK=deck@<ip>      the Deck (default from tools/deck/deck.local, git-ignored, or deck@steamdeck, its default hostname)
 #   DEST=<dir on Deck>  default ~/fifastreet3
 # Make the package first: powershell -File tools/make_deck_package.ps1
 # --with-game also copies game/ (2.2 GB, needed once; the Deck keeps its own copy).
 set -eu
 cd "$(dirname "$0")/../.."
 [ -f tools/deck/deck.local ] && . tools/deck/deck.local
-DECK="${DECK:-deck@192.168.1.82}"
+DECK="${DECK:-deck@steamdeck}"
 DEST="${DEST:-fifastreet3}"
 PKG=dist/fifastreet3-deck
 [ -f "$PKG/fifastreet3.exe" ] || { echo "no package in $PKG"; exit 1; }

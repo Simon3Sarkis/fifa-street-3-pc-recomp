@@ -69,6 +69,9 @@ wait_reg_mem_spin_wine_us = 50000
 # (99.7% -> 99.9% of frames on time). No effect on Windows.
 gpu_command_thread_cpu = 0
 
+# Options menu in the game: F1, Esc, or Start + Back together on the controller.
+menu_chord = 'back+start'
+
 # UI ticks from a high-resolution timer at the display rate: Proton emulates WaitForVBlank by polling,
 # which kept the UI thread at ~40% of a core on the Deck (now ~5%; paused-scene benchmark 59.6 +- 0.6).
 dxgi_ui_tick_timer = true

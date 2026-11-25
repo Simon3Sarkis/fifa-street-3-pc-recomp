@@ -9,7 +9,7 @@
 set -eu
 cd "$(dirname "$0")/../.."
 [ -f tools/deck/deck.local ] && . tools/deck/deck.local
-DECK="${DECK:-deck@192.168.1.82}"
+DECK="${DECK:-deck@steamdeck}"
 DEST="${DEST:-fifastreet3}"
 NAME="$1"; SCRIPT="$2"; shift 2
 EXTRA=$(printf ' %q' "$@")

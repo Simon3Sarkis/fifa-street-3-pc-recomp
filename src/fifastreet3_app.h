@@ -8,7 +8,12 @@
 
 #include <rex/cvar.h>
 #include <rex/filesystem.h>
+#include <rex/logging.h>
+#include <rex/input/input_system.h>
 #include <rex/rex_app.h>
+#include <rex/runtime.h>
+#include <rex/ui/keybinds.h>
+#include <rex/ui/window.h>
 #include <rex/ui/windowed_app_context.h>
 
 #include "fifastreet3_launcher.h"
@@ -87,6 +92,64 @@ class FifaStreet3App : public rex::ReXApp {
     return std::nullopt;
   }
 
+  // In-game options: F1, Esc, or the controller chord (menu_chord, Start + Back in the config).
+  void OnCreateDialogs(rex::ui::ImGuiDrawer* drawer) override {
+    (void)drawer;
+    rex::ui::RegisterBind("bind_options_menu", "F1", "Open or close the options menu",
+                          [this] { ToggleOptions(); });
+    rex::ui::RegisterBind("bind_options_menu_escape", "Escape", "Open or close the options menu",
+                          [this] { ToggleOptions(); });
+  }
+
+  void OnPostSetup() override {
+    if (auto* input = static_cast<rex::input::InputSystem*>(runtime()->input_system())) {
+      // Fires on the guest thread that polls input.
+      input->SetMenuChordCallback(
+          [this]() { app_context().CallInUIThread([this]() { ToggleOptions(); }); });
+    }
+  }
+
  private:
+  // UI thread. Only once the game runs (the launcher has its own buttons).
+  void ToggleOptions() {
+    if (launcher_ || !runtime()) {
+      return;
+    }
+    if (options_) {
+      CloseOptions();
+      return;
+    }
+    rex::ui::LauncherDialog::Options options;
+    options.title = "Options";
+    options.subtitle = "FIFA Street 3  |  0.0.1 barebone port";
+    options.settings_path = fs3::UserSettingsPath();
+    options.in_game = true;
+    auto back = [this](const std::filesystem::path&) {
+      app_context().CallInUIThreadDeferred([this]() { CloseOptions(); });
+    };
+    auto quit = [this]() {
+      app_context().CallInUIThreadDeferred([this]() {
+        CloseOptions();
+        if (window()) {
+          window()->RequestClose();
+        }
+      });
+    };
+    options_ = std::make_unique<rex::ui::LauncherDialog>(imgui_drawer(), window(),
+                                                         std::move(options), nullptr,
+                                                         std::move(back), std::move(quit));
+    SetGuestInputBlocked(true);
+    REXLOG_INFO("Options menu opened");
+  }
+
+  void CloseOptions() {
+    if (options_) {
+      REXLOG_INFO("Options menu closed");
+    }
+    options_.reset();
+    SetGuestInputBlocked(false);
+  }
+
   std::unique_ptr<rex::ui::LauncherDialog> launcher_;
+  std::unique_ptr<rex::ui::LauncherDialog> options_;
 };

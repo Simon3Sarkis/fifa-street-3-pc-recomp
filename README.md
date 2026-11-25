@@ -1,11 +1,42 @@
-# FIFA Street 3 PC port (private)
+# FIFA Street 3 PC port - barebone port
 
-A static recompilation of the Xbox 360 version of FIFA Street 3 (NTSC, title 4541083B) to a native
-Windows exe with ReXGlue. Stage A is a 1:1 port with no changes; features come after. Plan and rules:
-[PLAN.md](PLAN.md). Progress, findings and the test loop: [NOTES.md](NOTES.md).
+A static recompilation of the Xbox 360 version of FIFA Street 3 (NTSC, title 4541083B) to native
+Windows and Linux / Steam Deck builds, with the [ReXGlue SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk).
 
-**No game files are in this repository.** You need your own disc image; everything derived from it
-(`game/`, `generated/`, `work/`, `out/`) stays local.
+**This is a barebone port, released for testing.** The goal right now is to play exactly like the
+Xbox 360 version (1:1) at a stable 60 FPS. It will improve over time. Please report anything that
+doesn't match the Xbox 360 version: crashes, picture or sound differences, slowdowns. **Feature
+requests come later**, once the port plays 1:1.
+
+**No game files are in this repository or its releases.** You need your own copy of the game; everything
+derived from it (`game/`, `generated/`, `work/`, `out/`) stays local.
+
+## Playing (release 0.0.1)
+
+1. Download the [latest release](https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp/releases):
+   `windows-x64.zip` for Windows, `linux-x64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
+2. Start `fifastreet3.exe` (Windows) or `./fifastreet3` (Linux / Steam Deck).
+3. The first time, pick your FIFA Street 3 disc image (.iso) with **Select ISO...**: it's read as it
+   is, nothing is extracted. Choose the display options and press **Play**.
+
+Or with **RecompLauncher**: the release folder holds a `recomplauncher.json`; RecompLauncher asks for
+the game and starts it.
+
+**Options** in the game: **F1**, **Esc**, or **Start + Back** together on the controller: display,
+screen mode (windowed / borderless / exclusive), refresh rate, vsync, game resolution (720p / 1080p)
+and render scale (1x-4x). The frame rate stays at 60, as on the console.
+
+**Steam Deck:** the native Linux build runs at 60 FPS at 720p (about 99.8% of frames on time even at a
+10 W TDP). Keep render scale at 1x. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
+
+Your settings (`fifastreet3.user.toml`), saves (`userdata/`) and logs (`logs/`) stay next to the
+program; unpacking a new version over the old folder keeps them.
+
+FIFA Street 3 is (c) Electronic Arts. This project is not affiliated with or endorsed by EA or Microsoft.
+
+## Development
+
+Plan and rules: [PLAN.md](PLAN.md). Progress, findings and the test loop: [NOTES.md](NOTES.md).
 
 ## Build (Windows)
 
@@ -53,7 +84,7 @@ bash tools/deck/bench_ab.sh ab 4 "" "--some_option=true"
 
 Status and what limited it: NOTES.md entry 15.
 
-The SDK (`third_party/rexglue-sdk`) is the private repo `fifa-street-3-rexglue-sdk`, branch
+The SDK (`third_party/rexglue-sdk`) is the public repo `Simon3Sarkis/fifa-street-3-rexglue-sdk`, branch
 `fifastreet3`: the rexglue-skate3 fork (v0.10.0) plus this port's changes, listed in NOTES.md.
 
 ## License

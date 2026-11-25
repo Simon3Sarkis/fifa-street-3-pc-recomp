@@ -239,7 +239,7 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     build under Proton. `tools/make_deck_package.ps1` -> `dist/fifastreet3-deck` (exe, DLLs, app-local VC++
     runtime, config, portable.txt, tools/deck, tests/input); `tools/deck/push.sh [--with-game]` copies it
     over SSH; on the Deck `tools/deck/run.sh <name> [script]` runs it under Proton Experimental with
-    per-run userdata/snaps/logs. Not tested yet: the Deck (deck@192.168.1.82 in Super Odyssey) did not
+    per-run userdata/snaps/logs. Not tested yet: the Deck (as in Super Odyssey) did not
     answer SSH on 2026-11-23.
 
 12. **2026-11-23, Steam Deck running + first verified baseline.** Deck OLED (Galileo, RADV VANGOGH),
