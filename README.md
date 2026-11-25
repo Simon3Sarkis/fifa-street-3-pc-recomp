@@ -67,26 +67,30 @@ third_party\rexglue-sdk\out\win-amd64\rexgluerd.exe --force codegen fifastreet3_
 & .\tools\iterate.ps1 -SkipCodegen -SkipBuild -RunSeconds 60
 ```
 
-## Steam Deck (Proton)
+## Steam Deck (native Linux)
 
-The baseline target is the Steam Deck at 1280x720, 60 FPS. The Windows build runs there under Proton
-Experimental; `config/fifastreet3.runtime.toml` carries the Deck settings (each with what it fixes and
-how it was measured), and settings that only help under Proton apply only there.
+The baseline target is the Steam Deck at 1280x720, 60 FPS, and the Deck runs the **native Linux
+build** (no Proton): faster than the Windows build under Proton (59.9 vs 52.2 FPS in full matches,
+measured interleaved). It's built on the PC in WSL (Ubuntu 24.04, Clang 20, preset
+`linux-amd64-relwithdebinfo`), from the same sources. `config/fifastreet3.runtime.toml` carries the Deck
+settings, each with what it fixes and how it was measured.
 
-```powershell
-# On the PC: portable folder with the exe, DLLs, VC++ runtime and config
-& .\tools\make_deck_package.ps1
+```bash
+# In WSL, in the Linux build tree (sources synced from this checkout): build and package the release
+cmake --build out/build/linux-amd64-relwithdebinfo
+bash tools/make_release_linux.sh 0.0.1      # dist/fifastreet3-0.0.1-linux-x86_64.tar.gz
 ```
 ```bash
-# From Git Bash: copy it (and once, the game files) to the Deck over SSH, then run a test script there
-bash tools/deck/push.sh --with-game
-SAVE=1 bash tools/deck/remote_run.sh m1 tests/input/perf_match.txt
-# Benchmarks: repeated runs, or interleaved A/B with paired differences
-SCRIPT=tests/input/perf_match.txt PHASE=match bash tools/deck/bench.sh m 5
-bash tools/deck/bench_ab.sh ab 4 "" "--some_option=true"
+# From Git Bash on the PC: run a test script on the Deck over SSH (DECK=deck@<host> or tools/deck/deck.local)
+RUN=run_native.sh DEST=fifastreet3-native SAVE=1 bash tools/deck/remote_run.sh m1 tests/input/perf_match.txt
+# Benchmarks: interleaved A/B with paired differences
+SCRIPT=tests/input/perf_match_frames.txt A_ENV="RUN=run_native.sh DEST=fifastreet3-native"   B_ENV="RUN=run_native.sh DEST=fifastreet3-native" bash tools/deck/bench_ab.sh ab 3 "" "--some_option=true"
 ```
 
-Status and what limited it: NOTES.md entry 15.
+The Windows build also still runs on the Deck under Proton (`tools/make_deck_package.ps1`,
+`tools/deck/push.sh`); settings that only help there apply only under Wine / Proton.
+
+Status and findings: NOTES.md entries 15 (Proton), 16 (native build), 17-18 (10 W, audio).
 
 The SDK (`third_party/rexglue-sdk`) is the public repo `Simon3Sarkis/fifa-street-3-rexglue-sdk`, branch
 `fifastreet3`: the rexglue-skate3 fork (v0.10.0) plus this port's changes, listed in NOTES.md.
