@@ -1,5 +1,7 @@
 # FIFA Street 3 PC port - barebone port
 
+<a href="https://recomplauncher.com"><picture><source media="(prefers-color-scheme: dark)" srcset="https://recomplauncher.com/assets/press/launcher/badge-light.svg"><img alt="Get it on RecompLauncher" src="https://recomplauncher.com/assets/press/launcher/badge-dark.svg" height="48"></picture></a>
+
 A static recompilation of the Xbox 360 version of FIFA Street 3 (NTSC, title 4541083B) to native
 Windows and Linux / Steam Deck builds, with the [ReXGlue SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk).
 
@@ -14,20 +16,22 @@ derived from it (`game/`, `generated/`, `work/`, `out/`) stays local.
 ## Playing (release 0.0.1)
 
 1. Download the [latest release](https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp/releases):
-   `windows-x64.zip` for Windows, `linux-x64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
+   `windows-x64.zip` for Windows, `linux-x86_64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
 2. Start `fifastreet3.exe` (Windows) or `./fifastreet3` (Linux / Steam Deck).
 3. The first time, pick your FIFA Street 3 disc image (.iso) with **Select ISO...**: it's read as it
    is, nothing is extracted. Choose the display options and press **Play**.
 
-Or with **RecompLauncher**: the release folder holds a `recomplauncher.json`; RecompLauncher asks for
-the game and starts it.
+Or with **RecompLauncher**: every release carries a `recomplauncher.json`. RecompLauncher asks for your
+disc image (it checks it's FIFA Street 3), shows the display settings on the game's page and starts
+the game straight in. Your saves and shader cache then live in the game's `recompdata` folder, which
+the launcher backs up (saves only).
 
 **Options** in the game: **F1**, **Esc**, or **Start + Back** together on the controller: display,
 screen mode (windowed / borderless / exclusive), refresh rate, vsync, game resolution (720p / 1080p)
 and render scale (1x-4x). The frame rate stays at 60, as on the console.
 
-**Steam Deck:** the native Linux build runs at 60 FPS at 720p (about 99.8% of frames on time even at a
-10 W TDP). Keep render scale at 1x. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
+**Steam Deck:** the native Linux build runs at 60 FPS at 720p, with 99.9% of frames on time at a 15 W
+TDP (a short hitch about 3 times a match in the heaviest scenes) and 99.6% at 10 W. Keep render scale at 1x. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
 
 Your settings (`fifastreet3.user.toml`), saves (`userdata/`) and logs (`logs/`) stay next to the
 program; unpacking a new version over the old folder keeps them.

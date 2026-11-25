@@ -16,8 +16,8 @@ Starting it
 - Windows: run fifastreet3.exe. Linux / Steam Deck: run ./fifastreet3
 - The first time, pick your FIFA Street 3 disc image (.iso) with "Select ISO...". It is read as it
   is; nothing is extracted. Or put the .iso next to the program, and it is found by itself.
-- With RecompLauncher: add this folder (it holds recomplauncher.json); the launcher asks for the
-  game and starts it.
+- With RecompLauncher: it reads recomplauncher.json, asks for your disc image and starts the game
+  straight in. Saves and the shader cache then go in the recompdata folder here.
 
 Options
 -------
@@ -26,8 +26,8 @@ controller. Display, screen mode, refresh rate, vsync, game resolution (720p / 1
 (1x-4x). The frame rate stays at 60, as on the console. Game resolution, render scale and vsync
 apply the next time the game starts.
 
-Steam Deck: keep render scale at 1x. Measured on the Deck at 720p: 60 FPS, and about 99.8% of
-frames on time even at a 10 W TDP.
+Steam Deck: keep render scale at 1x. Measured on the Deck: 60 FPS with 99.9% of frames on time at a
+15 W TDP (a short hitch about 3 times a match in the heaviest scenes); 99.6% at 10 W.
 
 Your settings are in fifastreet3.user.toml, your saves in userdata\, logs in logs\. Unpacking a
 new version over this folder keeps all three.

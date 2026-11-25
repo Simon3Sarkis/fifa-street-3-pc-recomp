@@ -9,41 +9,91 @@
       "role": "game",
       "label": "Your own FIFA Street 3 for Xbox 360: the disc image (.iso), or a folder with its extracted files (default.xex). Nothing is extracted from an .iso; the game reads it as it is.",
       "formats": [
-        { "type": "file", "extensions": ["iso"] },
-        { "type": "folder" }
+        {
+          "type": "file",
+          "extensions": [
+            "iso"
+          ]
+        },
+        {
+          "type": "folder"
+        }
       ],
       "check": {
-        "ids": ["4541083B"]
+        "ids": [
+          "4541083B"
+        ]
       }
     }
   ],
   "start": {
-    "program": ["fifastreet3.exe", "fifastreet3"],
-    "args": ["--launcher=false"]
+    "program": [
+      "fifastreet3.exe",
+      "fifastreet3"
+    ],
+    "args": [
+      "--launcher=false"
+    ]
   },
   "config": [
     {
       "id": "main",
       "format": "toml",
-      "file": [{ "path": "{install}/fifastreet3.user.toml" }],
+      "file": [
+        {
+          "path": "{install}/fifastreet3.user.toml"
+        }
+      ],
       "game_path": "game_data_root"
     }
   ],
-  "saves": ["{install}/userdata"],
+  "saves": [
+    "{data}"
+  ],
   "folders": {
-    "saves": [{ "path": "{install}/userdata" }],
-    "logs": [{ "path": "{install}/logs" }]
+    "saves": [
+      {
+        "path": "{data}"
+      }
+    ],
+    "logs": [
+      {
+        "path": "{install}/logs"
+      }
+    ]
   },
+  "actions": [
+    {
+      "id": "saves",
+      "label": "Saves",
+      "help": "Your FIFA Street 3 profile and saves.",
+      "open": "saves"
+    },
+    {
+      "id": "cache",
+      "label": "Shader cache",
+      "help": "Shaders the game has built for your GPU, so scenes don't stutter the second time. Clearing only helps if graphics look wrong after an update.",
+      "clear": "saves/cache"
+    }
+  ],
   "exit_codes": {
     "0": "ok"
   },
   "system": {
-    "windows": { "version": "10" },
-    "linux": { "glibc": "2.39" }
+    "windows": {
+      "version": "10"
+    },
+    "linux": {
+      "glibc": "2.39"
+    }
   },
   "groups": [
-    { "id": "Display" },
-    { "id": "Graphics" }
+    {
+      "id": "Display"
+    },
+    {
+      "id": "Graphics"
+    }
   ],
   "settings": [
     {
@@ -52,11 +102,31 @@
       "help": "Borderless covers the screen without changing the display mode. Exclusive takes over the display. On Windows a window can drop below 60 FPS (the desktop compositor).",
       "group": "Display",
       "choices": [
-        { "label": "Borderless fullscreen", "set": { "fullscreen": "true", "fullscreen_mode": "'borderless'" } },
-        { "label": "Exclusive fullscreen", "set": { "fullscreen": "true", "fullscreen_mode": "'exclusive'" } },
-        { "label": "Windowed", "set": { "fullscreen": "false" } }
+        {
+          "label": "Borderless fullscreen",
+          "set": {
+            "fullscreen": "true",
+            "fullscreen_mode": "'borderless'"
+          }
+        },
+        {
+          "label": "Exclusive fullscreen",
+          "set": {
+            "fullscreen": "true",
+            "fullscreen_mode": "'exclusive'"
+          }
+        },
+        {
+          "label": "Windowed",
+          "set": {
+            "fullscreen": "false"
+          }
+        }
       ],
-      "defaults": { "fullscreen": "true", "fullscreen_mode": "'borderless'" }
+      "defaults": {
+        "fullscreen": "true",
+        "fullscreen_mode": "'borderless'"
+      }
     },
     {
       "id": "vsync",
@@ -64,20 +134,47 @@
       "help": "On: no tearing. Off: the least delay.",
       "group": "Display",
       "choices": [
-        { "label": "Off", "set": { "vulkan_allow_present_mode_immediate": "true", "vulkan_allow_present_mode_mailbox": "true" } },
-        { "label": "On", "set": { "vulkan_allow_present_mode_immediate": "false", "vulkan_allow_present_mode_mailbox": "false" } }
+        {
+          "label": "Off",
+          "set": {
+            "vulkan_allow_present_mode_immediate": "true",
+            "vulkan_allow_present_mode_mailbox": "true"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "vulkan_allow_present_mode_immediate": "false",
+            "vulkan_allow_present_mode_mailbox": "false"
+          }
+        }
       ],
-      "defaults": { "vulkan_allow_present_mode_immediate": "true", "vulkan_allow_present_mode_mailbox": "true" }
+      "defaults": {
+        "vulkan_allow_present_mode_immediate": "true",
+        "vulkan_allow_present_mode_mailbox": "true"
+      }
     },
     {
       "id": "show_fps",
       "label": "Show FPS",
       "group": "Display",
       "choices": [
-        { "label": "Off", "set": { "show_fps_counter": "false" } },
-        { "label": "On", "set": { "show_fps_counter": "true" } }
+        {
+          "label": "Off",
+          "set": {
+            "show_fps_counter": "false"
+          }
+        },
+        {
+          "label": "On",
+          "set": {
+            "show_fps_counter": "true"
+          }
+        }
       ],
-      "defaults": { "show_fps_counter": "false" }
+      "defaults": {
+        "show_fps_counter": "false"
+      }
     },
     {
       "id": "game_resolution",
@@ -85,10 +182,22 @@
       "help": "The video mode the game runs in: 720p as on most consoles, or the game's own 1080p mode.",
       "group": "Graphics",
       "choices": [
-        { "label": "1280 x 720 (720p, original)", "set": { "resolution": "'720p'" } },
-        { "label": "1920 x 1080 (1080p)", "set": { "resolution": "'1080p'" } }
+        {
+          "label": "1280 x 720 (720p, original)",
+          "set": {
+            "resolution": "'720p'"
+          }
+        },
+        {
+          "label": "1920 x 1080 (1080p)",
+          "set": {
+            "resolution": "'1080p'"
+          }
+        }
       ],
-      "defaults": { "resolution": "'720p'" }
+      "defaults": {
+        "resolution": "'720p'"
+      }
     },
     {
       "id": "render_scale",
@@ -96,12 +205,39 @@
       "help": "Draws everything this many times larger, then fits it to the screen: sharper, more GPU work. Keep 1x on the Steam Deck.",
       "group": "Graphics",
       "choices": [
-        { "label": "1x (native)", "set": { "draw_resolution_scale_x": "1", "draw_resolution_scale_y": "1" } },
-        { "label": "2x", "set": { "draw_resolution_scale_x": "2", "draw_resolution_scale_y": "2" } },
-        { "label": "3x", "set": { "draw_resolution_scale_x": "3", "draw_resolution_scale_y": "3" } },
-        { "label": "4x", "set": { "draw_resolution_scale_x": "4", "draw_resolution_scale_y": "4" } }
+        {
+          "label": "1x (native)",
+          "set": {
+            "draw_resolution_scale_x": "1",
+            "draw_resolution_scale_y": "1"
+          }
+        },
+        {
+          "label": "2x",
+          "set": {
+            "draw_resolution_scale_x": "2",
+            "draw_resolution_scale_y": "2"
+          }
+        },
+        {
+          "label": "3x",
+          "set": {
+            "draw_resolution_scale_x": "3",
+            "draw_resolution_scale_y": "3"
+          }
+        },
+        {
+          "label": "4x",
+          "set": {
+            "draw_resolution_scale_x": "4",
+            "draw_resolution_scale_y": "4"
+          }
+        }
       ],
-      "defaults": { "draw_resolution_scale_x": "1", "draw_resolution_scale_y": "1" }
+      "defaults": {
+        "draw_resolution_scale_x": "1",
+        "draw_resolution_scale_y": "1"
+      }
     }
   ]
 }

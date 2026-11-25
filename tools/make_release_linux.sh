@@ -1,5 +1,5 @@
 #!/bin/bash
-# Build the Linux / Steam Deck release: dist/fifastreet3-<version>-linux-x64.tar.gz
+# Build the Linux / Steam Deck release: dist/fifastreet3-<version>-linux-x86_64.tar.gz
 # Run inside the WSL Ubuntu build tree (/root/fs3, synced from the Windows checkout):
 #   bash tools/make_release_linux.sh [version]
 # Contents: fifastreet3 (finds its libraries next to itself, RUNPATH $ORIGIN), librexruntime /
@@ -11,7 +11,7 @@ cd "$(dirname "$0")/.."
 VERSION="${1:-0.0.1}"
 BUILD="${BUILD:-out/build/linux-amd64-relwithdebinfo}"
 SDK_OUT="${SDK_OUT:-third_party/rexglue-sdk/out/linux-amd64}"
-NAME="fifastreet3-$VERSION-linux-x64"
+NAME="fifastreet3-$VERSION-linux-x86_64"
 OUT="dist/$NAME"
 rm -rf "$OUT" && mkdir -p "$OUT/licenses"
 cp "$BUILD/fifastreet3" "$SDK_OUT"/librexruntime*.so "$SDK_OUT"/librexgpu-xenos*.so "$OUT/"
