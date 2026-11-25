@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <cstdlib>
 #include <memory>
 
 #include <rex/cvar.h>
@@ -52,6 +53,18 @@ class FifaStreet3App : public rex::ReXApp {
       }
       if (!rex::cvar::HasNonDefaultValue("cache_root")) {
         paths.cache_root = paths.user_data_root / "cache";
+      }
+    }
+    // Started by RecompLauncher: its data folder ({install}/recompdata, RECOMPLAUNCHER_DATA) holds the
+    // saves, and the shader cache in its cache folder, which the launcher leaves out of save backups.
+    // Only when the launcher sets it, and an explicit user_data_root / cache_root still wins.
+    if (const char* data = std::getenv("RECOMPLAUNCHER_DATA"); data && *data) {
+      const std::filesystem::path data_dir = std::filesystem::u8path(data);
+      if (!rex::cvar::HasNonDefaultValue("user_data_root")) {
+        paths.user_data_root = data_dir;
+      }
+      if (!rex::cvar::HasNonDefaultValue("cache_root")) {
+        paths.cache_root = data_dir / "cache";
       }
     }
   }
