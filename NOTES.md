@@ -474,11 +474,20 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     `fifastreet3.user.toml` next to the exe, which releases never ship, so updates keep them.
     Scripted runs (`input_script`) skip the launcher and the user file. Checked on the PC: ISO and
     extracted folder run the same (title screen, same conditions 54 vs 48 FPS); 1080p mode gives a
-    1920x1080 frontbuffer and a locked 60 focused (owner's run). **Wrong:** offering
-    `draw_resolution_scale` 2x presets - at 2x the players lose their shadows and a dark seam runs
-    across the middle of the screen (owner saw "horizontal lines"); removed, only the game's own
-    720p / 1080p modes are offered. Not checked yet: exclusive fullscreen at another refresh rate,
-    vsync on, the Linux / Deck build of the launcher.
+    1920x1080 frontbuffer and a locked 60 focused (owner's run). Not checked yet: exclusive
+    fullscreen at another refresh rate, vsync on, the Linux / Deck build of the launcher.
+
+20. **2026-11-24, render scale 2x-4x.** At 2x the owner saw "horizontal lines": a one-host-pixel dark
+    seam at the last row/column of the first predicated-tiling tile (row 767, column 1279 of
+    2560x1440; row 1087 at 1080p x2). Cause: the SDK's `draw_resolution_scaled_half_pixel_offset`
+    (half a HOST pixel, written for games whose full-screen quads start on whole pixels) leaves the
+    last host row/column of each tile uncovered when the quads start on half pixels, as here. With it
+    off (half a guest pixel, plus the SDK's resolve edge fill) no seam at 720p x2/x3/x4 or 1080p x2
+    (`tests/input/shadow_probe.txt`, row/column line scan; x4 keeps two duplicated middle columns from
+    the edge fill, not visible). Set in the config; no effect at 1x. RTX 4090: 60 FPS at all of them.
+    **Wrong first reading:** "2x drops the player shadows" - those frames had the players in shade
+    (entry 14's mistake again); shadow_probe frames at 2x/3x/4x have them. Launcher: "Game
+    resolution" (720p / 1080p) and "Render scale" (1x-4x). Steam Deck: stay at 1x.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.

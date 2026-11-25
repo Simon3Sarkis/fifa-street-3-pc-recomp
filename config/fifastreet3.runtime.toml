@@ -26,6 +26,14 @@ render_target_path_vulkan = 'host'
 # set to 1080p (Digital Foundry; Xenia report #2154): `--resolution=1080p` for that.
 resolution = '720p'
 
+# Render scale above 1x (launcher "Render scale"): keep the Direct3D 9 half-pixel offset as half a
+# GUEST pixel. The SDK's default (half a host pixel, made for games whose full-screen quads start on
+# whole pixels) leaves the last host row/column of every predicated-tiling tile uncovered here, because
+# this game's quads start on half pixels: a dark seam across the middle of the screen at 2x (row 767 /
+# column 1279 of 2560x1440). With this, 2x / 3x / 4x at 720p and 2x at 1080p show no seam
+# (tests/input/shadow_probe.txt, 2026-11-24). No effect at 1x.
+draw_resolution_scaled_half_pixel_offset = false
+
 # GPU emulation work cuts for the Steam Deck (2026-11-23). Each was checked 1:1 by freezing a match
 # under the pause menu (the scene keeps rendering), snapping it, switching the option on mid-run and
 # snapping again: pixel-identical (tests/input/pause_ab*.txt, tools/imgdiff.py).
