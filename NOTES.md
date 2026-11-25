@@ -489,6 +489,20 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     (entry 14's mistake again); shadow_probe frames at 2x/3x/4x have them. Launcher: "Game
     resolution" (720p / 1080p) and "Render scale" (1x-4x). Steam Deck: stay at 1x.
 
+21. **2026-11-25, the PC "locked at 30".** From ~22:23 on the 24th until ~10:00 on the 25th every PC
+    match ran at a locked 30 (some windows 20). Per-frame log: `vkQueueSubmit` blocked ~35.7 ms a frame
+    (median; 0.9 ms in the 60 FPS runs), swap 7.3 ms (0.5); the game's work the same (~1,200-1,400
+    draws), GPU at full clock 12% busy, CPU 4.3 GHz. The game's double-buffered vsync (as on the 360)
+    turns any frame over 16.7 ms into a wait for the next vblank: 30. **Not the code:** the build from
+    the 24th (before the display lock and menus) did the same; the same build ran 60 again at ~10:00
+    with no change. Ruled out: CPU/GPU clocks, FPS counter overlay, audio device / buffer / pacing /
+    WASAPI vs DirectSound, RTSS limiter (off), display mode. Switching off the implicit Vulkan layers
+    (12 installed: RTSS, OBS, CapFrameX, RenderDoc, Steam overlay + Fossilize, SCSKiller x4, Galaxy,
+    EOS) restored 60 once, but by then the plain run was back to 60 too, so the trigger was outside
+    the game and went away by itself (another program using the GPU or holding the driver). The SDK
+    now logs a plain warning when submissions block > 8 ms a frame (every bad run trips it in 48-53
+    of 53 windows, good runs never).
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
