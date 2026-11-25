@@ -33,6 +33,7 @@ endif()
 set(FS3_SOURCES
     src/main.cpp
     src/fifastreet3_hooks.cpp
+    src/fifastreet3_launcher.cpp
 )
 
 # Exe/window icon. The icon is the game's cover art, so it is not committed:

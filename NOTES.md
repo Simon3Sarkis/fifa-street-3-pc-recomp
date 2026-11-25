@@ -465,6 +465,20 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     CPU 0. CPU 0 vs CPU 6 (another core, in case CPU 0's housekeeping/interrupts were the cause),
     interleaved, 3 pairs: 5/9/4 vs 7/5/12 missed per ~3600 frames, no difference; interrupts per CPU
     are even. The rest still come every ~5 s (multiples of 299 frames) with the thread off-CPU ~20 ms.
+19. **2026-11-24, launcher and playing from the ISO.** Before the game starts, a launcher
+    (`rex::ui::LauncherDialog` in the SDK, wired in `src/fifastreet3_app.h`) asks for the disc image
+    once and offers dropdowns: display, screen mode (windowed / borderless / exclusive), refresh
+    rate (exclusive only), vsync, internal resolution, frame rate (60 only). Mouse, keyboard and
+    controller. The ISO is read in place (SDK `DiscImageDevice` mounted where the game folder was),
+    and checked against the recompiled `default.xex` (size + FNV-1a). Choices go to
+    `fifastreet3.user.toml` next to the exe, which releases never ship, so updates keep them.
+    Scripted runs (`input_script`) skip the launcher and the user file. Checked on the PC: ISO and
+    extracted folder run the same (title screen, same conditions 54 vs 48 FPS); 1080p mode gives a
+    1920x1080 frontbuffer and a locked 60 focused (owner's run). **Wrong:** offering
+    `draw_resolution_scale` 2x presets - at 2x the players lose their shadows and a dark seam runs
+    across the middle of the screen (owner saw "horizontal lines"); removed, only the game's own
+    720p / 1080p modes are offered. Not checked yet: exclusive fullscreen at another refresh rate,
+    vsync on, the Linux / Deck build of the launcher.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.

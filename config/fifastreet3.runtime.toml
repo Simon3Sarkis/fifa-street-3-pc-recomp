@@ -5,7 +5,8 @@
 
 # Since SDK 0.10 the Xenos GPU emulation is a plugin; without this the game starts with no GPU.
 gpu_plugin = 'xenos'
-game_data_root = 'game'
+# Where the game is: not set here. The launcher asks for the disc image (.iso) and saves it in
+# fifastreet3.user.toml; without one, a game\ folder or an .iso next to the exe is used.
 
 # Real 60 Hz vblanks. With vsync off the runtime fires vblank at 1000 Hz and a game that paces
 # on vblank runs uncapped (Skate 1's finding).
