@@ -1,4 +1,4 @@
-FIFA Street 3 - PC port, version 0.0.1 (pre-release, barebone port)
+FIFA Street 3 - PC port, version 0.0.2 (pre-release, barebone port)
 =====================================================================
 
 A native PC and Steam Deck port of the Xbox 360 FIFA Street 3, made by static recompilation
@@ -55,7 +55,6 @@ Known issues
 ------------
 - Short stutters the first time each scene appears, while its shaders are built for your GPU. They
   are kept (userdata\cache) and don't come back.
-- Windowed mode on Windows can run below 60 FPS (the desktop compositor); fullscreen is smooth.
 - On a high refresh rate display a few frames per minute can be held a refresh too long.
 
 Source and reports: https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp

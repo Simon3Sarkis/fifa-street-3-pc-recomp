@@ -1,12 +1,12 @@
 # Build the Windows release zip: dist\fifastreet3-<version>-windows-x64.zip
-# Usage: & .\tools\make_release.ps1 [-Version 0.0.1]
+# Usage: & .\tools\make_release.ps1 [-Version 0.0.2]
 # Contents: the exe, runtime + GPU plugin DLLs, the VC++ runtime (app-local), fifastreet3.toml (the
 # shipped settings), recomplauncher.json, portable.txt (saves and logs stay next to the exe),
 # README.txt, fonts\ (Anton, SIL OFL 1.1, for the menus), the project licence and every bundled
 # library's licence. No game files, no test tools.
 # The player's own choices go to fifastreet3.user.toml, which a release never contains, so unpacking
 # a new version over an old one keeps them.
-param([string]$Version = '0.0.1')
+param([string]$Version = '0.0.2')
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path $PSScriptRoot -Parent

@@ -13,7 +13,7 @@ requests come later**, once the port plays 1:1.
 **No game files are in this repository or its releases.** You need your own copy of the game; everything
 derived from it (`game/`, `generated/`, `work/`, `out/`) stays local.
 
-## Playing (release 0.0.1)
+## Playing (release 0.0.2)
 
 1. Download the [latest release](https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp/releases):
    `windows-x64.zip` for Windows, `linux-x86_64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
@@ -32,9 +32,16 @@ disc image (it checks it's FIFA Street 3), shows the display settings on the gam
 the game straight in. Your saves and shader cache then live in the game's `recompdata` folder, which
 the launcher backs up (saves only).
 
-**Options** in the game: **F1**, **Esc**, or **Start + Back** together on the controller: display,
-screen mode (windowed / borderless / exclusive), refresh rate, vsync, game resolution (720p / 1080p)
-and render scale (1x-4x). The frame rate stays at 60, as on the console.
+**Options** in the game: **F1**, **Esc**, or **Start + Back** together on the controller. The game
+pauses while the menu is open; tabs switch with **LB / RB** (or PgUp / PgDn). Every option's default
+is the Xbox 360 picture.
+- **Display:** display, screen mode (windowed / borderless / exclusive), refresh rate, vsync, FPS
+  counter.
+- **Graphics:** game resolution (720p / 1080p), render scale (1x-4x), upscaling filter (bilinear,
+  AMD FSR 1, AMD CAS) with sharpening, texture filtering (up to 16x anisotropic), anti-aliasing
+  (FXAA).
+
+The frame rate stays at 60, as on the console.
 
 **Steam Deck:** the native Linux build runs at 60 FPS at 720p, with 99.9% of frames on time at a 15 W
 TDP (a short hitch about 3 times a match in the heaviest scenes) and 99.6% at 10 W. Keep render scale at 1x. Measurements: [docs/STEAM_DECK.md in the SDK](https://github.com/Simon3Sarkis/fifa-street-3-rexglue-sdk/blob/fifastreet3/docs/STEAM_DECK.md).
@@ -90,7 +97,7 @@ settings, each with what it fixes and how it was measured.
 ```bash
 # In WSL, in the Linux build tree (sources synced from this checkout): build and package the release
 cmake --build out/build/linux-amd64-relwithdebinfo
-bash tools/make_release_linux.sh 0.0.1      # dist/fifastreet3-0.0.1-linux-x86_64.tar.gz
+bash tools/make_release_linux.sh 0.0.2      # dist/fifastreet3-0.0.2-linux-x86_64.tar.gz
 ```
 ```bash
 # From Git Bash on the PC: run a test script on the Deck over SSH (DECK=deck@<host> or tools/deck/deck.local)

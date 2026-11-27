@@ -85,7 +85,7 @@ class FifaStreet3App : public rex::ReXApp {
     }
     rex::ui::LauncherDialog::Options options;
     options.title = "FIFA Street 3";
-    options.subtitle = "PC port  |  0.0.1 pre-release, for testing";
+    options.subtitle = "PC port  |  0.0.2 pre-release, for testing";
     options.game_path = defaults.game_data_root;
     options.settings_path = fs3::UserSettingsPath();
     options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
@@ -166,7 +166,7 @@ class FifaStreet3App : public rex::ReXApp {
     const bool pause = REXCVAR_GET(pause_in_options_menu);
     rex::ui::LauncherDialog::Options options;
     options.title = "Options";
-    options.subtitle = "FIFA Street 3  |  0.0.1 barebone port";
+    options.subtitle = "FIFA Street 3  |  0.0.2 barebone port";
     options.settings_path = fs3::UserSettingsPath();
     options.in_game = true;
     options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";

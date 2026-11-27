@@ -622,6 +622,20 @@ never inside a .pdata function. A second scan after adding them found nothing ne
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
+25. **2026-11-27, the PC "30 FPS lock" found: borderless presentation, not an outside program.**
+    Entries 21 and 22 blamed an outside condition. It was the screen mode: borderless (the launcher's
+    default since 2026-11-24, when the lock started) goes through the desktop compositor, and with
+    immediate or mailbox presentation the NVIDIA driver blocks `vkQueueSubmit` ~16 ms a frame, so the
+    game's double-buffered vsync drops to 30-40. Same build, same match (`options_pause.txt`), GPU
+    otherwise idle: exclusive 60 / 0.06 ms, borderless immediate 38.5 / 16.0 ms, exclusive 60 /
+    0.04 ms; borderless mailbox 39.2 / 15.2 ms, borderless FIFO 60 / 0.03 ms. 0.0.1 did the same
+    (35.9 FPS borderless). **Fix (SDK):** `vulkan_composited_present_fifo` (default on): on Windows,
+    not under Wine, borderless and windowed present with FIFO; exclusive keeps immediate. After it:
+    borderless, exclusive, windowed and borderless again all 60 (0.03-0.04 ms); full match
+    (`perf_match_frames`, borderless): 30 of 30 play windows at 60, worst frame 19.2 ms, no frame over
+    33 ms, no driver warning. The other non-60 windows in these runs are the boot logo video (30, the
+    game's own) and the paused menu.
+
 ## Test loop
 
 - `tools/iterate.ps1 [-RunSeconds N] [-SkipCodegen] [-SkipBuild]`: codegen, build, copy DLLs + config,
