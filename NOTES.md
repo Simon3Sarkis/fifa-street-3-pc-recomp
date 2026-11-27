@@ -548,8 +548,21 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       to 60.
     - Seen once: a run exited silently 4 s after boot, before any menu use, no crash record; the
       same script then ran clean. Not reproduced.
-    - Found, not fixed: the menu chord's Start also reaches the game (a match opens its own pause
-      menu behind ours); a button still held when the menu closes reaches the game too.
+    - **Input fixes** (SDK `InputSystem::FilterGuestButtons`, guest `GetState` only):
+      the menu chord's buttons never reach the game: a chord button pressed alone reaches it
+      `menu_chord_hold_ms` (80) late in case the other joins; once the chord completes its buttons
+      stay hidden until both are released; a tap shorter than the hold is still delivered (for
+      ~2 frames). And every button held when a host menu closes (`IgnoreButtonsHeldNow`, called by
+      the app; also when the input gate reopens) is ignored until released, per button
+      (`input_ignore_held_after_menu`). Packet numbers advance when the filter changes what the
+      guest sees. Scripted tests: `input_chord.txt` - Start + Back in a match opens only our menu
+      (c1 = play), plain Start pauses and resumes, a 40 ms tap pauses; control
+      `--menu_chord_hold_ms=0`: c1 = GAME PAUSED (the old bug). `input_held_close.txt` - A held
+      across the menu closing at the main menu: stays on the main menu, a fresh A then opens
+      PLAY NOW; control `--input_ignore_held_after_menu=false`: A opens PLAY NOW at the close.
+      Not covered: a real pad (human chord timing, closing with B / A through the menu's own SDL
+      polling), the keystroke API (one call site in the game, unfiltered), analog sticks and
+      triggers held across a close (only buttons are filtered).
     - **"New version available"** (owner's request; `src/fifastreet3_update.cpp`): launcher screen
       only, one GET of `api.github.com/repos/.../releases/latest` (full releases only) on a detached
       thread, 5 s timeout, user agent `fifastreet3-update-check`; compared with the VERSION file

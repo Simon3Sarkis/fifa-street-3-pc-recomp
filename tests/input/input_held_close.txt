@@ -1,0 +1,17 @@
+# A button held when the options menu closes must not reach the game. At the main menu (PLAY NOW
+# highlighted): open the menu, hold A from 1 s after it opens until 4 s after it closes itself.
+# With the fix the main menu stays (snap h1 = main menu); A's release is no press either (h2).
+# Control: --input_ignore_held_after_menu=false (A reaches the game: PLAY NOW opens the team
+# select). Then a fresh A press still works (h3 = team select). Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++2500  snap h0
++0     set launcher_autoplay_ms 5000
++0     set options_menu_open true
++1000  hold A 8000
++6000  snap h1
++4000  snap h2
++500   press A 150
++5000  snap h3
++500   quit

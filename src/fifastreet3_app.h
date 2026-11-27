@@ -209,6 +209,11 @@ class FifaStreet3App : public rex::ReXApp {
     }
     options_.reset();
     REXCVAR_SET(options_menu_open, false);
+    // The button that closed the menu (A, B, Start + Back) must not reach the game.
+    if (auto* input =
+            runtime() ? static_cast<rex::input::InputSystem*>(runtime()->input_system()) : nullptr) {
+      input->IgnoreButtonsHeldNow();
+    }
     if (runtime()) {
       runtime()->SetGuestPaused(false);
     }

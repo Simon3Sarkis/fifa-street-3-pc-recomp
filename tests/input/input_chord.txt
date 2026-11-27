@@ -1,0 +1,34 @@
+# Menu chord vs the game's own Start (pause). In a match:
+#  1. Start + Back together opens the options menu; with the fix the game must NOT also pause:
+#     snap c1 (after the menu closed itself) shows play, not GAME PAUSED.
+#  2. A plain Start (150 ms) still pauses the match: snap p1 shows GAME PAUSED; Start again resumes.
+#  3. A short Start tap (40 ms, shorter than menu_chord_hold_ms) still pauses: snap t1.
+# Control: --menu_chord_hold_ms=0 (old behaviour: c1 shows GAME PAUSED). Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  stick L 0.6 0.3 2000
++3000  snap c0
++0     set launcher_autoplay_ms 4000
++0     log phase: chord
++0     press BACK+START 250
++6000  snap c1
++2000  log phase: plain start
++0     press START 150
++3000  snap p1
++0     press START 150
++3000  snap p2
++0     log phase: short tap
++0     press START 40
++3000  snap t1
++0     press START 150
++3000  snap t2
++500   quit
