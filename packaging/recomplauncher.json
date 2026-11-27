@@ -156,24 +156,41 @@
     },
     {
       "id": "show_fps",
-      "label": "Show FPS",
+      "label": "FPS counter",
+      "help": "A small counter in the top right corner. F2 in the game toggles it too.",
       "group": "Display",
       "choices": [
         {
-          "label": "Off",
+          "label": "Off (original)",
           "set": {
             "show_fps_counter": "false"
           }
         },
         {
-          "label": "On",
+          "label": "FPS",
           "set": {
-            "show_fps_counter": "true"
+            "show_fps_counter": "true",
+            "show_fps_counter_detail": "0"
+          }
+        },
+        {
+          "label": "FPS + frame time",
+          "set": {
+            "show_fps_counter": "true",
+            "show_fps_counter_detail": "1"
+          }
+        },
+        {
+          "label": "Detailed (GPU timings)",
+          "set": {
+            "show_fps_counter": "true",
+            "show_fps_counter_detail": "2"
           }
         }
       ],
       "defaults": {
-        "show_fps_counter": "false"
+        "show_fps_counter": "false",
+        "show_fps_counter_detail": "2"
       }
     },
     {
@@ -237,6 +254,193 @@
       "defaults": {
         "draw_resolution_scale_x": "1",
         "draw_resolution_scale_y": "1"
+      }
+    },
+    {
+      "id": "upscaling_filter",
+      "label": "Upscaling filter",
+      "help": "How the picture is fitted to the screen. Bilinear is a plain stretch, as before. AMD FSR 1 upscales edge-aware and sharpens; AMD CAS sharpens. Can also be changed in the game (F1).",
+      "group": "Graphics",
+      "choices": [
+        {
+          "label": "Bilinear (original)",
+          "set": {
+            "present_effect": "'bilinear'"
+          }
+        },
+        {
+          "label": "AMD FSR 1",
+          "set": {
+            "present_effect": "'fsr'"
+          }
+        },
+        {
+          "label": "AMD CAS",
+          "set": {
+            "present_effect": "'cas'"
+          }
+        }
+      ],
+      "defaults": {
+        "present_effect": "'bilinear'"
+      }
+    },
+    {
+      "id": "fsr_sharpening",
+      "label": "FSR 1 sharpening",
+      "help": "How sharp AMD FSR 1 makes the picture. 4 is FSR's own default.",
+      "group": "Graphics",
+      "choices": [
+        {
+          "label": "1 (softest)",
+          "set": {
+            "present_fsr_sharpness_reduction": "2.0"
+          }
+        },
+        {
+          "label": "2",
+          "set": {
+            "present_fsr_sharpness_reduction": "1.0"
+          }
+        },
+        {
+          "label": "3",
+          "set": {
+            "present_fsr_sharpness_reduction": "0.5"
+          }
+        },
+        {
+          "label": "4 - default",
+          "set": {
+            "present_fsr_sharpness_reduction": "0.2"
+          }
+        },
+        {
+          "label": "5 (sharpest)",
+          "set": {
+            "present_fsr_sharpness_reduction": "0.0"
+          }
+        }
+      ],
+      "defaults": {
+        "present_fsr_sharpness_reduction": "0.2"
+      },
+      "when": {
+        "present_effect": "'fsr'"
+      }
+    },
+    {
+      "id": "cas_sharpening",
+      "label": "CAS sharpening",
+      "help": "How sharp AMD CAS makes the picture. 1 is CAS's own default.",
+      "group": "Graphics",
+      "choices": [
+        {
+          "label": "1 (softest) - default",
+          "set": {
+            "present_cas_additional_sharpness": "0.0"
+          }
+        },
+        {
+          "label": "2",
+          "set": {
+            "present_cas_additional_sharpness": "0.25"
+          }
+        },
+        {
+          "label": "3",
+          "set": {
+            "present_cas_additional_sharpness": "0.5"
+          }
+        },
+        {
+          "label": "4",
+          "set": {
+            "present_cas_additional_sharpness": "0.75"
+          }
+        },
+        {
+          "label": "5 (sharpest)",
+          "set": {
+            "present_cas_additional_sharpness": "1.0"
+          }
+        }
+      ],
+      "defaults": {
+        "present_cas_additional_sharpness": "0.0"
+      },
+      "when": {
+        "present_effect": "'cas'"
+      }
+    },
+    {
+      "id": "texture_filtering",
+      "label": "Texture filtering",
+      "help": "Anisotropic filtering keeps the pitch, ground and walls sharp at shallow angles. Game default filters each texture as the console does.",
+      "group": "Graphics",
+      "choices": [
+        {
+          "label": "Game default (original)",
+          "set": {
+            "anisotropic_override": "-1"
+          }
+        },
+        {
+          "label": "2x anisotropic",
+          "set": {
+            "anisotropic_override": "2"
+          }
+        },
+        {
+          "label": "4x anisotropic",
+          "set": {
+            "anisotropic_override": "3"
+          }
+        },
+        {
+          "label": "8x anisotropic",
+          "set": {
+            "anisotropic_override": "4"
+          }
+        },
+        {
+          "label": "16x anisotropic",
+          "set": {
+            "anisotropic_override": "5"
+          }
+        }
+      ],
+      "defaults": {
+        "anisotropic_override": "-1"
+      }
+    },
+    {
+      "id": "anti_aliasing",
+      "label": "Anti-aliasing",
+      "help": "FXAA smooths jagged edges at the cost of a slightly softer picture.",
+      "group": "Graphics",
+      "choices": [
+        {
+          "label": "Off (original)",
+          "set": {
+            "swap_post_effect": "'none'"
+          }
+        },
+        {
+          "label": "FXAA",
+          "set": {
+            "swap_post_effect": "'fxaa'"
+          }
+        },
+        {
+          "label": "FXAA (extreme)",
+          "set": {
+            "swap_post_effect": "'fxaa_extreme'"
+          }
+        }
+      ],
+      "defaults": {
+        "swap_post_effect": "'none'"
       }
     }
   ]

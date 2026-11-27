@@ -503,6 +503,54 @@ never inside a .pdata function. A second scan after adding them found nothing ne
     now logs a plain warning when submissions block > 8 ms a frame (every bad run trips it in 48-53
     of 53 windows, good runs never).
 
+22. **2026-11-26, Stage B starts: 0.1.0 "PC options" (branches `pc-options-0.1` here and in the SDK).**
+    Plan and per-option recipe in PLAN.md section 7. What went in and what was measured (PC, RTX 4090,
+    2560x1440 120 Hz display, borderless):
+    - **The in-game menu holds the game** (`pause_in_options_menu`, default on; SDK
+      `Runtime::SetGuestPaused`): guest audio callbacks stop, every guest thread parks at its next
+      kernel wait / delay / yield (the kernel's existing title-termination safe point, plus
+      `NtYieldExecution` and `SignalAndWait`), the guest clock (mftb, KeQuerySystemTime) stops, and
+      the vblank thread fires nothing while held. No thread is suspended from outside, so none is
+      stopped holding a host lock. `tests/input/options_pause.txt`, mid-match, menu open 8 s:
+      guest tick identical at pause and resume (2951600400), 4-5 guest threads parked, guest frames
+      presented 236 at open and 236 at close; control run (`--pause_in_options_menu=false`)
+      265 -> 497. The match continues where it was; closing the window while held exits in 0.4 s
+      (`options_close.txt`). While held the guest polls no input, so a scripted Start + Back can't
+      close the menu: scripts open it with `set options_menu_open true` (testing cvar) and close it
+      with `launcher_autoplay_ms`; a real pad closes it through the menu's own SDL polling.
+    - **Tabs** Display / Graphics / Audio / Controls (LB / RB, PgUp / PgDn; `options_menu_tab`
+      remembers the last); in the game each row is tagged NOW or RESTART. The pre-game launcher
+      keeps its disc section above the tabs.
+    - **Video options**, all NOW: upscaling filter (`present_effect` bilinear / fsr / cas), five
+      sharpening levels per filter, texture filtering (`anisotropic_override` -1 / 2x-16x), FXAA
+      (`swap_post_effect`), FPS counter (`show_fps_counter` + new `show_fps_counter_detail`). The
+      SDK had FSR 1 / CAS compiled out unless the AMD FidelityFX SDK (and so the Vulkan SDK) was
+      found, though their shaders are prebuilt in the tree; they are now always built (the define
+      is PUBLIC, since it changes `presenter.h` class layouts), only fsr2 / fsr3 still need the
+      AMD runtime. Change callbacks apply effect / sharpness / FXAA while the game runs.
+    - **Off = unchanged** (`tests/input/options_ab.txt`, game paused, `tools/imgdiff.py`): the
+      noise floor is a blinking pause-menu element (3,207 px in box 297,136-528,166); outside it
+      a0 vs a1 0 px; aniso 16x 411,372 px differ, back to -1: 0 px; FXAA 64,892 px, back to none:
+      0 px. FSR 1 / CAS act when presenting, so they are checked on the presented frame (new
+      `present_capture_interval_ms`, a swapchain readback that works with the screen locked):
+      2560x1440 frames from 720p, FSR 1 2.67 M px differ from bilinear, CAS 2.20 M, back to
+      bilinear 0 px. Game output snaps are unchanged by FSR / CAS (0 px), as expected.
+    - **RecompLauncher**: the same rows (FPS counter, upscaling filter, FSR 1 sharpening, CAS
+      sharpening, texture filtering, anti-aliasing); the two sharpening rows are separate keys with
+      `when` on the filter, because the launcher shows "the first choice whose keys all match" and a
+      combined row would match nothing on a fresh install. Valid against the schema (0 errors);
+      every row's `defaults` matches a choice. Open: the game writes 0.2 as
+      `0.20000000000000001` (toml++ precision); whether the launcher compares as text is unknown.
+    - **60 FPS full match: not confirmed tonight.** `perf_match_frames.txt` ran locked at 30 for
+      this branch and equally for the main build from 2026-11-25 (copied, same run, same
+      settings), with `vkQueueSubmit` blocking 12-17 ms a frame - entry 21's outside condition
+      again; `VK_LOADER_LAYERS_DISABLE=~implicit~` didn't help this time. Rerun when the PC is back
+      to 60.
+    - Seen once: a run exited silently 4 s after boot, before any menu use, no crash record; the
+      same script then ran clean. Not reproduced.
+    - Found, not fixed: the menu chord's Start also reaches the game (a match opens its own pause
+      menu behind ours); a button still held when the menu closes reaches the game too.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
@@ -528,6 +576,11 @@ audio check by ear, saves reloaded, 2-player.
   `python tools/snapsheet.py <run> [<run>...]` makes a sheet.
 - Help cards pause the match until A; to turn them off: B, UP (to DISABLE), A.
 - Screenshots of an already running game: `& .\tools\snap.ps1 -NoLaunch -At 5,20`.
+- **Presented frames** (after the upscaling filter, with menus and overlays): add
+  `-GameArgs @('--present_capture_interval_ms=2000')`; `present_<ms>.bmp` land in the run's snap
+  folder. Works when screen copies fail (locked screen: "CopyFromScreen ... handle is invalid").
+- In-game menu in scripts: `set options_menu_open true`, `set options_menu_tab N`,
+  `set launcher_autoplay_ms N` (closes it after N ms).
 
 ## Tried and wrong
 

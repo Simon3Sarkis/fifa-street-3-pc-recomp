@@ -138,19 +138,40 @@ behaviour with reference evidence.
 
 You sign off on the gate; I don't declare it.
 
-## 7. Stage B: features (after the gate, each off by default, each with a switch)
+## 7. Stage B: a native-feeling PC port
 
-Rough order, to be re-decided then:
-1. Resolution scaling and the real monitor resolution, MSAA/anisotropic options.
-2. Frame-rate options above the original, at real game speed (the hard one: the game's logic is probably tied to
-   frame rate, as in Odyssey and Skate).
-3. Ultrawide / 16:10 / 4:3 with correct HUD placement.
-4. Keyboard and mouse, button-prompt swap, controller remapping.
-5. Settings menu or launcher (Condemned 2 and FM4 are the models), shader pre-compile, skippable intros.
-6. Later: upscalers, HDR, Steam Deck / Linux, texture packs.
+Stage A rule kept for good: **every option, when off (its default), reproduces the Xbox 360 exactly.**
+The console has no settings menu, so the menu itself changes nothing while it is closed.
 
-Rule from Odyssey: a feature may not change the 1:1 result when it is off. The Stage A reference set is re-run
-before any feature is merged.
+### The recipe (every option, the same way)
+
+1. **A setting** in `fifastreet3.user.toml` (a cvar). Its default is the Xbox 360 behaviour, so a
+   player who never opens the menu gets the console game.
+2. **A row in the in-game menu** (F1 / Esc / Start + Back; `rex::ui::LauncherDialog` in the SDK), in
+   its tab (Display, Graphics, Audio, Controls), tagged **NOW** (applies at once) or **RESTART**
+   (applies the next time the game starts). The same row shows in the pre-game launcher.
+3. **The same row in `packaging/recomplauncher.json`**: same choices, `defaults` = the game's
+   default, so the launcher shows the right choice on a fresh install. Validate against the
+   RecompLauncher schema (WSL `python3` + `jsonschema`).
+4. **A 1:1 test**: with the option off, the picture / behaviour is the console's. For picture
+   options: freeze a frame (the game's pause), snap with defaults, switch the option on, snap,
+   switch it back off, snap: "back off" must equal the defaults pixel for pixel
+   (`tests/input/options_ab.txt`, `tools/imgdiff.py`). Presenter-side options (upscaling) are
+   checked on the presented frame (`present_capture_interval_ms`).
+5. **A release-notes line**: what it does, its default, NOW / RESTART.
+
+### Phases
+
+| Phase | Release | Content |
+|---|---|---|
+| 1. Menu basics + finishing 1:1 checks | 0.1.0 | The game pauses while the in-game menu is open; the menu is split into tabs (Display, Graphics, Audio, Controls; empty ones say what is planned). Remaining Stage A checks. |
+| 2. PC video options | 0.1.0 "PC options" | Upscaling filter (bilinear / AMD FSR 1 / AMD CAS) with sharpening, texture filtering (anisotropic 2x-16x), FXAA, FPS counter / frame time. Existing rows kept as they are: screen mode, display, refresh rate, vsync, game resolution (720p / 1080p), render scale (1x-4x) - resolution and render scale stay two rows (owner's decision). |
+| 3. Ultrawide | 0.2.0 | As in the Odyssey port: first correct black bars at 21:9 / 32:9 / 16:10 / 4:3, then filling the screen with the HUD kept 16:9. |
+| 4. Keyboard / mouse and remapping | 0.3.0 | Keyboard and mouse play, button prompts, controller and key remapping (Controls tab). |
+| 5. Later | - | Frame rates above 60 at real game speed (the game's logic is tied to 60), HDR, intro skip, shader pre-compile. |
+
+Rule from Odyssey: a feature may not change the 1:1 result when it is off. The Stage A reference set is
+re-run before any feature is merged.
 
 ## 8. Risks
 

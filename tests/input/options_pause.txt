@@ -1,0 +1,29 @@
+# The in-game options menu holds the game. Mid-match (players running): snap s0, open the menu
+# (`set options_menu_open`, not Start + Back: Start would also open the game's own pause menu),
+# leave it ~8 s (launcher_autoplay_ms presses BACK TO GAME). s1 is due while the game is held, so it
+# fires on the first input poll after the resume: with the pause s1 is a frame or two after s0
+# (same positions). The log's "guest frames so far" is the same at open and close (FPS counter on,
+# so frames are counted). Control run: --pause_in_options_menu=false (the game runs on behind the
+# menu, s1 is 1.5 s of play later). Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++0     set show_fps_counter true
++1500  stick L 0.6 0.3 9000
++5000  snap s0
++0     set launcher_autoplay_ms 8000
++0     log phase: open menu
++0     set options_menu_open true
++1500  snap s1
++7500  snap s9
++0     log phase: after menu
++3000  snap s12
++500   quit

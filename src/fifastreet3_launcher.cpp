@@ -27,6 +27,16 @@ REXCVAR_DEFINE_BOOL(launcher, true, "FIFA Street 3",
                     "Show the launcher (game disc image and display settings) before the game "
                     "starts. Scripted runs (input_script) skip it.");
 
+REXCVAR_DEFINE_BOOL(pause_in_options_menu, true, "FIFA Street 3",
+                    "Hold the game while the in-game options menu is open (guest threads, guest "
+                    "clock, vblank and audio stop; it continues where it was on close). The "
+                    "console has no such menu, so this changes nothing while the menu is closed.");
+
+REXCVAR_DEFINE_BOOL(options_menu_open, false, "FIFA Street 3",
+                    "Testing: set to true (input-script `set`) to open the in-game options menu "
+                    "without a button press; it follows the menu's state.")
+    .lifecycle(rex::cvar::Lifecycle::kHotReload);
+
 namespace fs3 {
 
 namespace {

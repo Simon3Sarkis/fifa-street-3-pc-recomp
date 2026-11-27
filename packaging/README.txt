@@ -22,9 +22,15 @@ Starting it
 Options
 -------
 Before the game: the launcher screen. In the game: F1, Esc, or Start + Back together on the
-controller. Display, screen mode, refresh rate, vsync, game resolution (720p / 1080p), render scale
-(1x-4x). The frame rate stays at 60, as on the console. Game resolution, render scale and vsync
-apply the next time the game starts.
+controller; the game is paused while the menu is open. Tabs: LB / RB (or PgUp / PgDn).
+Every option's default is the Xbox 360 picture.
+- Display: display, screen mode, refresh rate, vsync, FPS counter (off / FPS / FPS + frame time /
+  detailed).
+- Graphics: game resolution (720p / 1080p), render scale (1x-4x), upscaling filter (bilinear,
+  AMD FSR 1, AMD CAS) with sharpening, texture filtering (game default, 2x-16x anisotropic),
+  anti-aliasing (off, FXAA, FXAA extreme). The frame rate stays at 60, as on the console.
+In the game each row says NOW (changes at once) or RESTART (game resolution, render scale and
+vsync: the next time the game starts).
 
 Steam Deck: keep render scale at 1x. Measured on the Deck: 60 FPS with 99.9% of frames on time at a
 15 W TDP (a short hitch about 3 times a match in the heaviest scenes); 99.6% at 10 W.
@@ -36,7 +42,6 @@ Known issues
 ------------
 - Short stutters the first time each scene appears, while its shaders are built for your GPU. They
   are kept (userdata\cache) and don't come back.
-- The game keeps running while the options menu is open.
 - Windowed mode on Windows can run below 60 FPS (the desktop compositor); fullscreen is smooth.
 - On a high refresh rate display a few frames per minute can be held a refresh too long.
 

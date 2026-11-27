@@ -1,0 +1,22 @@
+# Screenshots of the options menu, one tab at a time (Display, Graphics, Audio, Controls), with the
+# FPS counter on. Each opening holds the game for ~7 s and closes itself (launcher_autoplay_ms).
+# Run with -At every second from ~20 s and pick the frames with the menu open.
+# Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++2000  snap main_menu
++0     log phase: tabs
++0     set show_fps_counter true
++0     set show_fps_counter_detail 1
++0     set launcher_autoplay_ms 7000
++0     set options_menu_tab 0
++0     set options_menu_open true
++9000  set options_menu_tab 1
++0     set options_menu_open true
++9000  set options_menu_tab 2
++0     set options_menu_open true
++9000  set options_menu_tab 3
++0     set options_menu_open true
++9000  log phase: done
++500   quit

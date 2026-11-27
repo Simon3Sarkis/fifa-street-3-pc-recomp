@@ -4,6 +4,7 @@
 
 #pragma once
 
+#include <chrono>
 #include <cstdlib>
 #include <memory>
 
@@ -14,12 +15,16 @@
 #include <rex/rex_app.h>
 #include <rex/runtime.h>
 #include <rex/ui/keybinds.h>
+#include <rex/ui/presenter.h>
+#include <rex/system/interfaces/graphics.h>
 #include <rex/ui/window.h>
 #include <rex/ui/windowed_app_context.h>
 
 #include "fifastreet3_launcher.h"
 
 REXCVAR_DECLARE(bool, launcher);
+REXCVAR_DECLARE(bool, pause_in_options_menu);
+REXCVAR_DECLARE(bool, options_menu_open);
 
 class FifaStreet3App : public rex::ReXApp {
  public:
@@ -120,6 +125,17 @@ class FifaStreet3App : public rex::ReXApp {
       input->SetMenuChordCallback(
           [this]() { app_context().CallInUIThread([this]() { ToggleOptions(); }); });
     }
+    // Scripted tests open the menu with `set options_menu_open true`: a Start + Back press would
+    // also reach the game (Start pauses a match).
+    rex::cvar::RegisterChangeCallback("options_menu_open", [this](std::string_view,
+                                                                  std::string_view) {
+      app_context().CallInUIThread([this]() {
+        if (REXCVAR_GET(options_menu_open) != (options_ != nullptr)) {
+          last_toggle_ = {};
+          ToggleOptions();
+        }
+      });
+    });
   }
 
  private:
@@ -128,15 +144,25 @@ class FifaStreet3App : public rex::ReXApp {
     if (launcher_ || !runtime()) {
       return;
     }
+    // One press can reach here twice (the menu's own Start + Back and the input system's chord,
+    // or a held key): ignore toggles right after the last one.
+    const auto now = std::chrono::steady_clock::now();
+    if (now - last_toggle_ < std::chrono::milliseconds(400)) {
+      return;
+    }
+    last_toggle_ = now;
     if (options_) {
       CloseOptions();
       return;
     }
+    const bool pause = REXCVAR_GET(pause_in_options_menu);
     rex::ui::LauncherDialog::Options options;
     options.title = "Options";
     options.subtitle = "FIFA Street 3  |  0.0.1 barebone port";
     options.settings_path = fs3::UserSettingsPath();
     options.in_game = true;
+    options.in_game_note = pause ? "The game is paused while this menu is open."
+                                 : "The game keeps running while this menu is open.";
     auto back = [this](const std::filesystem::path&) {
       app_context().CallInUIThreadDeferred([this]() { CloseOptions(); });
     };
@@ -152,17 +178,34 @@ class FifaStreet3App : public rex::ReXApp {
                                                          std::move(options), nullptr,
                                                          std::move(back), std::move(quit));
     SetGuestInputBlocked(true);
-    REXLOG_INFO("Options menu opened");
+    if (pause) {
+      runtime()->SetGuestPaused(true);
+    }
+    REXCVAR_SET(options_menu_open, true);
+    REXLOG_INFO("Options menu opened (guest frames so far: {})", GuestFrameCount());
+  }
+
+  // Frames the game has presented (counted while the FPS counter or debug overlay is on, else 0).
+  uint64_t GuestFrameCount() const {
+    auto* graphics = runtime() ? runtime()->graphics_system() : nullptr;
+    auto* presenter = graphics ? graphics->presenter() : nullptr;
+    return presenter ? presenter->GetGuestFrameStats().frame_count : 0;
   }
 
   void CloseOptions() {
     if (options_) {
-      REXLOG_INFO("Options menu closed");
+      REXLOG_INFO("Options menu closed (guest frames so far: {})", GuestFrameCount());
+      last_toggle_ = std::chrono::steady_clock::now();
     }
     options_.reset();
+    REXCVAR_SET(options_menu_open, false);
+    if (runtime()) {
+      runtime()->SetGuestPaused(false);
+    }
     SetGuestInputBlocked(false);
   }
 
   std::unique_ptr<rex::ui::LauncherDialog> launcher_;
   std::unique_ptr<rex::ui::LauncherDialog> options_;
+  std::chrono::steady_clock::time_point last_toggle_{};
 };

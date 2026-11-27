@@ -1,12 +1,14 @@
-# In-game options menu: open with Start + Back, keep it open, close with Start + Back again.
-# Use -Save work\saves\fresh_profile. The menu is an overlay, so check it with screen captures
-# (tools\snap.ps1 -NoLaunch) at about +3 s and +9 s after "snap main_menu"; snaps here show the
-# game's own picture only.
+# In-game options menu: open with Start + Back at the main menu, keep it open, then it closes itself
+# (launcher_autoplay_ms presses BACK TO GAME). Since 0.1 the menu pauses the game: the guest stops
+# polling the controller, so a scripted second Start + Back can't reach it (a real pad closes it
+# through the menu's own controller polling). Use -Save work\saves\fresh_profile. The menu is an
+# overlay, so check it with screen captures (run_script -At) while it is open; snaps here show the
+# game's own picture only. The log shows "Guest paused" / "Guest resumed after ... s".
 0      log boot
 0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
 +1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
 +2000  snap main_menu
++0     set launcher_autoplay_ms 8000
 +0     press BACK+START 250
-+8000  press BACK+START 250
-+5000  snap opt_closed
++10000 snap opt_closed
 +500   quit

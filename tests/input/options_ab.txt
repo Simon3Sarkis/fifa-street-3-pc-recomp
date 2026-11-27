@@ -1,0 +1,43 @@
+# Phase 2 video options, "off = unchanged": pause a match (the game's own pause, frozen scene), snap
+# with everything at the defaults (a0, a1 = noise floor), switch one option on, snap, switch it back
+# off, snap again; the "back off" snaps must equal a0 exactly:
+#   python tools/imgdiff.py <run> a0 a1 aniso16 aniso_off fxaa fxaa_off fsr_off cas_off
+# Texture filtering and FXAA are in the game's output (snap); the upscaling filters are applied
+# when presenting, so they show only in screen captures: run with -At every second and pick the
+# frames from the log's "phase:" lines. Use -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  stick L 0.6 0.3 3000
++4000  snap match_1
++1000  press START 150  # pause
++3000  snap a0
++1500  snap a1
++0     log phase: bilinear
++0     set anisotropic_override 5
++1500  snap aniso16
++0     set anisotropic_override -1
++1500  snap aniso_off
++0     set swap_post_effect fxaa
++1500  snap fxaa
++0     set swap_post_effect none
++1500  snap fxaa_off
++0     log phase: fsr
++0     set present_effect fsr
++5000  snap fsr_game
++0     log phase: cas
++0     set present_effect cas
++5000  snap cas_game
++0     log phase: bilinear again
++0     set present_effect bilinear
++3000  snap fsr_off
++0     snap cas_off
++500   quit
