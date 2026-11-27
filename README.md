@@ -18,8 +18,14 @@ derived from it (`game/`, `generated/`, `work/`, `out/`) stays local.
 1. Download the [latest release](https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp/releases):
    `windows-x64.zip` for Windows, `linux-x86_64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
 2. Start `fifastreet3.exe` (Windows) or `./fifastreet3` (Linux / Steam Deck).
-3. The first time, pick your FIFA Street 3 disc image (.iso) with **Select ISO...**: it's read as it
-   is, nothing is extracted. Choose the display options and press **Play**.
+3. The first time, pick your FIFA Street 3 disc image (.iso) with **Select ISO...** (it's read as it
+   is, nothing is extracted), or an extracted game folder with **Folder...**. Choose the display
+   options and press **Play**.
+
+**Game versions:** only the NTSC Xbox 360 version (title 4541083B) is tested. Other regions and
+versions are allowed: the launcher says they're untested, and they may not start or may not work
+correctly. If you try one, please report how it went with the newest file from `logs/` (it names
+the version).
 
 Or with **RecompLauncher**: every release carries a `recomplauncher.json`. RecompLauncher asks for your
 disc image (it checks it's FIFA Street 3), shows the display settings on the game's page and starts

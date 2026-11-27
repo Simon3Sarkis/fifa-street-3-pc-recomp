@@ -90,7 +90,7 @@ class FifaStreet3App : public rex::ReXApp {
     options.settings_path = fs3::UserSettingsPath();
     options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
     options.picker_hint =
-        "Select your FIFA Street 3 disc image (.iso). It is read as it is, nothing is extracted.";
+        "Select your FIFA Street 3 disc image (.iso), read as it is, or an extracted game folder.";
     // "A new version is available": one request to GitHub on its own thread, never blocking.
     options.update_notice = std::make_shared<rex::ui::LauncherDialog::UpdateNotice>();
     if (fs3::UpdateCheckOffered()) {

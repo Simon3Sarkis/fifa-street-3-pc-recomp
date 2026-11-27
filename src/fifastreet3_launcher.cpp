@@ -41,10 +41,12 @@ namespace fs3 {
 
 namespace {
 
-// The game executable this port was recompiled from (default.xex on the disc): its size and
-// FNV-1a 64 hash. Another region or version would not match the recompiled code.
+// The game executable this port was recompiled from (default.xex on the NTSC disc, title
+// 4541083B): its size and FNV-1a 64 hash. It is the only version tested; other regions and
+// versions are allowed, with a notice, since their code may differ from the recompiled one.
 constexpr uint64_t kXexSize = 2613248;
 constexpr uint64_t kXexFnv1a64 = 0x65248770d412c24aull;
+constexpr uint32_t kTitleId = 0x4541083B;
 
 uint64_t Fnv1a64(std::span<const uint8_t> data) {
   uint64_t h = 0xcbf29ce484222325ull;
@@ -54,16 +56,55 @@ uint64_t Fnv1a64(std::span<const uint8_t> data) {
   return h;
 }
 
+uint32_t ReadBe32(const std::vector<uint8_t>& d, size_t at) {
+  return at + 4 <= d.size() ? uint32_t(d[at]) << 24 | uint32_t(d[at + 1]) << 16 |
+                                  uint32_t(d[at + 2]) << 8 | uint32_t(d[at + 3])
+                            : 0;
+}
+
+// Title ID and version from the XEX2 execution info header (key 0x00040006); 0 if absent.
+void ReadExecutionInfo(const std::vector<uint8_t>& xex, uint32_t& title_id, uint32_t& version) {
+  title_id = version = 0;
+  const uint32_t count = ReadBe32(xex, 0x14);
+  for (uint32_t i = 0; i < count && i < 64; ++i) {
+    const size_t entry = 0x18 + size_t(i) * 8;
+    if (ReadBe32(xex, entry) == 0x00040006) {
+      const size_t info = ReadBe32(xex, entry + 4);
+      version = ReadBe32(xex, info + 4);
+      title_id = ReadBe32(xex, info + 12);
+      return;
+    }
+  }
+}
+
 rex::ui::LauncherDialog::GameCheck CheckXex(const std::vector<uint8_t>& xex) {
   if (xex.size() < 4 || std::memcmp(xex.data(), "XEX2", 4) != 0) {
-    return {false, "This disc image has no Xbox 360 game executable."};
+    return {false, "This has no Xbox 360 game executable (default.xex)."};
   }
-  if (xex.size() != kXexSize || Fnv1a64(xex) != kXexFnv1a64) {
-    return {false,
-            "This is a different game, or another version of FIFA Street 3 than the one this "
-            "port was made from."};
+  const uint64_t hash = Fnv1a64(xex);
+  if (xex.size() == kXexSize && hash == kXexFnv1a64) {
+    return {true, "Ready: FIFA Street 3 (NTSC), the version this port was made and tested with."};
   }
-  return {true, "Ready: FIFA Street 3, the version this port was made from."};
+  uint32_t title_id, version;
+  ReadExecutionInfo(xex, title_id, version);
+  // Logged so a report of how it ran says which version it was.
+  REXLOG_WARN("Game check: untested version: title {:08X}, version {:08X}, default.xex {} bytes, "
+              "FNV-1a 64 {:016x}",
+              title_id, version, xex.size(), hash);
+  const std::string id = fmt::format("title {:08X}, version {:08X}", title_id, version);
+  if (title_id != kTitleId) {
+    return {true,
+            fmt::format("Untested: this isn't the FIFA Street 3 this port was tested with ({}). "
+                        "Only the NTSC version is tested; another one may not start or may not "
+                        "work correctly. You can still play it.",
+                        id),
+            true};
+  }
+  return {true,
+          fmt::format("Untested version of FIFA Street 3 ({}). Only the NTSC version is tested; "
+                      "this one may not start or may not work correctly. You can still play it.",
+                      id),
+          true};
 }
 
 }  // namespace
@@ -103,14 +144,18 @@ std::filesystem::path FindGame(const std::filesystem::path& exe_dir) {
 rex::ui::LauncherDialog::GameCheck CheckGame(const std::filesystem::path& path) {
   std::error_code ec;
   if (path.empty() || !std::filesystem::exists(path, ec)) {
-    return {false, "The game file can't be found. Select your FIFA Street 3 disc image (.iso)."};
+    return {false,
+            "The game can't be found. Select your FIFA Street 3 disc image (.iso) or extracted "
+            "game folder."};
   }
   std::vector<uint8_t> xex;
   if (std::filesystem::is_directory(path, ec)) {
     const auto xex_path = path / "default.xex";
     FILE* f = rex::filesystem::OpenFile(xex_path, "rb");
     if (!f) {
-      return {false, "This folder has no default.xex. Select your FIFA Street 3 disc image."};
+      return {false,
+              "This folder has no default.xex. Select the folder the game was extracted to, or "
+              "the disc image."};
     }
     xex.resize(std::filesystem::file_size(xex_path, ec));
     xex.resize(fread(xex.data(), 1, xex.size(), f));

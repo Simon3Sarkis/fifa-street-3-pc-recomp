@@ -15,7 +15,11 @@ Starting it
 -----------
 - Windows: run fifastreet3.exe. Linux / Steam Deck: run ./fifastreet3
 - The first time, pick your FIFA Street 3 disc image (.iso) with "Select ISO...". It is read as it
-  is; nothing is extracted. Or put the .iso next to the program, and it is found by itself.
+  is; nothing is extracted. Or pick an extracted game folder with "Folder...", or put the .iso
+  next to the program, and it is found by itself.
+- Only the NTSC Xbox 360 version (title 4541083B) is tested. Other regions and versions are
+  allowed, but they may not start or may not work correctly. Reports welcome (attach the newest
+  file from logs\, it names the version).
 - With RecompLauncher: it reads recomplauncher.json, asks for your disc image and starts the game
   straight in. Saves and the shader cache then go in the recompdata folder here.
 
