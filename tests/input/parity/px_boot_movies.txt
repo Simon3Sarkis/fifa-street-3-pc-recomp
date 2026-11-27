@@ -1,0 +1,15 @@
+# Boot and wait on the title screen: the EA logo movies at boot, then the idle (attract) movie.
+# Run with --filesystem_log_opens=true to see which movie files were opened.
+0      log boot
+4000   snap s04
++4000  snap s08
++4000  snap s12
++6000  snap s18
++10000 snap s28
++10000 snap s38
++10000 snap s48
++10000 snap s58
++10000 snap s68
++10000 snap s78
++10000 snap s88
++2000  quit
