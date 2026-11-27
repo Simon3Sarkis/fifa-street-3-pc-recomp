@@ -17,4 +17,8 @@ Every new option defaults to the Xbox 360 picture; nothing changes until you pic
   `show_fps_counter`, `show_fps_counter_detail`.
 - Unchanged: screen mode, display, refresh rate, vsync (RESTART), game resolution 720p / 1080p
   (RESTART), render scale 1x-4x (RESTART).
+- **New version notice** (launcher screen only): one check of GitHub's latest full release at
+  start; if newer, a line with the version and a button that opens the release page. Nothing is
+  downloaded. Off with "Check for updates" (Display tab) / `update_check = false`; never runs when
+  started by RecompLauncher (it updates the game itself) or in scripted runs.
 - RecompLauncher: the same options in its Display and Graphics groups.

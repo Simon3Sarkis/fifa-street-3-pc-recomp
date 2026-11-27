@@ -34,6 +34,7 @@ set(FS3_SOURCES
     src/main.cpp
     src/fifastreet3_hooks.cpp
     src/fifastreet3_launcher.cpp
+    src/fifastreet3_update.cpp
 )
 
 # Exe/window icon. The icon is the game's cover art, so it is not committed:
@@ -52,6 +53,9 @@ endif()
 # Since SDK 0.10 the Xenos GPU emulation is a runtime-loaded plugin; this stages
 # rexgpu-xenos next to the exe (the runtime config selects it via gpu_plugin).
 rexglue_setup_target(fifastreet3 GPU_PLUGINS xenos)
+if(WIN32)
+    target_link_libraries(fifastreet3 PRIVATE winhttp)  # update check (fifastreet3_update.cpp)
+endif()
 
 # The SDK writes librexruntime into its own out/<platform> folder, but the host
 # only looks next to itself (@loader_path / $ORIGIN). Windows stages it via

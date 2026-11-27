@@ -21,6 +21,7 @@
 #include <rex/ui/windowed_app_context.h>
 
 #include "fifastreet3_launcher.h"
+#include "fifastreet3_update.h"
 
 REXCVAR_DECLARE(bool, launcher);
 REXCVAR_DECLARE(bool, pause_in_options_menu);
@@ -89,6 +90,12 @@ class FifaStreet3App : public rex::ReXApp {
     options.settings_path = fs3::UserSettingsPath();
     options.picker_hint =
         "Select your FIFA Street 3 disc image (.iso). It is read as it is, nothing is extracted.";
+    // "A new version is available": one request to GitHub on its own thread, never blocking.
+    options.update_notice = std::make_shared<rex::ui::LauncherDialog::UpdateNotice>();
+    if (fs3::UpdateCheckOffered()) {
+      options.update_check_cvar = "update_check";
+    }
+    fs3::StartUpdateCheck(options.update_notice);
     auto play = [this, defaults, resume](const std::filesystem::path& game) {
       rex::PathConfig paths = defaults;
       paths.game_data_root = game;
@@ -161,6 +168,9 @@ class FifaStreet3App : public rex::ReXApp {
     options.subtitle = "FIFA Street 3  |  0.0.1 barebone port";
     options.settings_path = fs3::UserSettingsPath();
     options.in_game = true;
+    if (fs3::UpdateCheckOffered()) {
+      options.update_check_cvar = "update_check";
+    }
     options.in_game_note = pause ? "The game is paused while this menu is open."
                                  : "The game keeps running while this menu is open.";
     auto back = [this](const std::filesystem::path&) {

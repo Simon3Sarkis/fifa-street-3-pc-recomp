@@ -36,6 +36,12 @@ TDP (a short hitch about 3 times a match in the heaviest scenes) and 99.6% at 10
 Your settings (`fifastreet3.user.toml`), saves (`userdata/`) and logs (`logs/`) stay next to the
 program; unpacking a new version over the old folder keeps them.
 
+**Updating:** with RecompLauncher, updates are automatic. Otherwise the launcher screen checks
+GitHub once at start for a newer full release and, if there is one, shows its version and a button
+that opens the release page (nothing is downloaded or installed; turn it off with "Check for
+updates" in the Display tab, or `update_check = false` in `fifastreet3.user.toml`). To update,
+unzip the new version over the old folder: settings, saves, shader cache and logs are kept.
+
 FIFA Street 3 is (c) Electronic Arts. This project is not affiliated with or endorsed by EA or Microsoft.
 
 ## Development

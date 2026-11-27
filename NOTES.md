@@ -550,6 +550,17 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       same script then ran clean. Not reproduced.
     - Found, not fixed: the menu chord's Start also reaches the game (a match opens its own pause
       menu behind ours); a button still held when the menu closes reaches the game too.
+    - **"New version available"** (owner's request; `src/fifastreet3_update.cpp`): launcher screen
+      only, one GET of `api.github.com/repos/.../releases/latest` (full releases only) on a detached
+      thread, 5 s timeout, user agent `fifastreet3-update-check`; compared with the VERSION file
+      the release scripts write; if newer, a line with the version and a button that opens the
+      release page (`SDL_OpenURL`). Never downloads anything. Off with `update_check = false`
+      ("Check for updates", Display tab), and never runs with `RECOMPLAUNCHER=1` (row hidden too)
+      or in scripted runs. Checked in the launcher: test version 0.0.0 + pre-releases -> "Version
+      0.0.1 is available"; full releases only -> GitHub 404 (none yet), no notice; no VERSION file
+      -> skipped; RECOMPLAUNCHER=1 and update_check=false -> no request. The button's click (opens
+      the browser) wasn't pressed in tests. Testing switches: `update_check_test_version`,
+      `update_check_test_prereleases`.
 
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.

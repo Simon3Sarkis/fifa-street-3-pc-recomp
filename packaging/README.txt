@@ -38,6 +38,15 @@ Steam Deck: keep render scale at 1x. Measured on the Deck: 60 FPS with 99.9% of 
 Your settings are in fifastreet3.user.toml, your saves in userdata\, logs in logs\. Unpacking a
 new version over this folder keeps all three.
 
+Updating
+--------
+With RecompLauncher, updates are automatic. Otherwise the launcher screen asks GitHub once at
+start whether a newer full release is out and, if so, shows its version and a button that opens
+the release page in your browser. Nothing is downloaded or installed. Turn the check off with
+"Check for updates" (Display tab) or update_check = false in fifastreet3.user.toml.
+To update: unzip the new version over this folder. Your settings, saves, shader cache and logs
+are kept.
+
 Known issues
 ------------
 - Short stutters the first time each scene appears, while its shaders are built for your GPU. They
