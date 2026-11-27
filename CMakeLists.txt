@@ -56,6 +56,14 @@ rexglue_setup_target(fifastreet3 GPU_PLUGINS xenos)
 if(WIN32)
     target_link_libraries(fifastreet3 PRIVATE winhttp)  # update check (fifastreet3_update.cpp)
 endif()
+# The menus' display face (Anton, SIL OFL 1.1: packaging/fonts/OFL.txt) next to the exe, as in a
+# release.
+add_custom_command(TARGET fifastreet3 POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E make_directory $<TARGET_FILE_DIR:fifastreet3>/fonts
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        ${CMAKE_CURRENT_SOURCE_DIR}/packaging/fonts/Anton-Regular.ttf
+        $<TARGET_FILE_DIR:fifastreet3>/fonts/Anton-Regular.ttf
+    VERBATIM)
 
 # The SDK writes librexruntime into its own out/<platform> folder, but the host
 # only looks next to itself (@loader_path / $ORIGIN). Windows stages it via

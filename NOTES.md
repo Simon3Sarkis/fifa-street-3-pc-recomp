@@ -585,9 +585,14 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       Every row, tab and behaviour is unchanged. Screenshots: in a match at 2560x1440 and in a
       1280x720 window, and the launcher, with `options_menu_focus_row` (new testing cvar) to show
       the pill. Fixed on the way: in the tab body the field column was placed from the panel's
-      padding, so a focused row scrolled the body sideways. **Font not done**: downloading an
-      OFL display font needs the owner's OK in that session's own chat; the built-in UI fonts
-      are used meanwhile. Seen once: one 1440p capture run showed the menu over a black frame (the
+      padding, so a focused row scrolled the body sideways. **Font**: Anton (SIL OFL 1.1, from
+      google/fonts ofl/anton, SHA-256 a4ba3a92...; downloaded with the owner's approval) is in
+      `packaging/fonts/` with its OFL.txt, copied next to the exe at build time (`fonts/`) and
+      shipped by both release scripts (font in `fonts/`, licence as
+      `licenses/Anton-font-OFL-1.1.txt`). The menu loads it through the new
+      `ImGuiDrawer::LoadFontFile` and uses it, upper case, for the title, tabs, row labels, tags
+      and buttons; values stay in the UI font. Without the file it falls back to the built-in
+      fonts. Pause test with it: guest frames 237 -> 237, tick unchanged. Seen once: one 1440p capture run showed the menu over a black frame (the
       game's picture black from just before the menu opened); the rerun was normal.
     - **a. 60 FPS full match**: main (build of 2026-11-25) and this branch back to back,
       `perf_match_frames`: 29.9 and 29.9 FPS, `vkQueueSubmit` 18.1 and 17.9 ms a frame, with

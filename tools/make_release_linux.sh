@@ -4,7 +4,8 @@
 #   bash tools/make_release_linux.sh [version]
 # Contents: fifastreet3 (finds its libraries next to itself, RUNPATH $ORIGIN), librexruntime /
 # librexgpu-xenos, fifastreet3.toml (the shipped settings), recomplauncher.json, portable.txt (saves
-# and logs next to the binary), README.txt, the project licence and every bundled library's licence.
+# and logs next to the binary), README.txt, fonts/ (Anton, SIL OFL 1.1, for the menus), the project
+# licence and every bundled library's licence.
 # No game files, no test tools. Built on Ubuntu 24.04: needs glibc 2.39 or newer (SteamOS 3.9 has 2.43).
 set -eu
 cd "$(dirname "$0")/.."
@@ -18,10 +19,12 @@ cp "$BUILD/fifastreet3" "$SDK_OUT"/librexruntime*.so "$SDK_OUT"/librexgpu-xenos*
 strip --strip-debug "$OUT/fifastreet3" "$OUT"/*.so
 cp config/fifastreet3.runtime.toml "$OUT/fifastreet3.toml"
 cp packaging/recomplauncher.json packaging/README.txt "$OUT/"
+mkdir -p "$OUT/fonts" && cp packaging/fonts/Anton-Regular.ttf "$OUT/fonts/"
 printf '%s' "$VERSION" > "$OUT/VERSION"
 : > "$OUT/portable.txt"
 cp LICENSE "$OUT/licenses/fifastreet3-pc-port-GPL-3.0.txt"
 cp third_party/rexglue-sdk/LICENSE "$OUT/licenses/rexglue-sdk.txt"
+cp packaging/fonts/OFL.txt "$OUT/licenses/Anton-font-OFL-1.1.txt"
 for dir in third_party/rexglue-sdk/thirdparty/*/; do
   lib=$(basename "$dir")
   found=$(find "$dir" -maxdepth 1 -type f -iregex '.*/\(license\|copying\|copyright\|notice\|unlicense\)[^/]*' | head -3)

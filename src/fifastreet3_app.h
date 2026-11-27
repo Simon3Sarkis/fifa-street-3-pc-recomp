@@ -88,6 +88,7 @@ class FifaStreet3App : public rex::ReXApp {
     options.subtitle = "PC port  |  0.0.1 pre-release, for testing";
     options.game_path = defaults.game_data_root;
     options.settings_path = fs3::UserSettingsPath();
+    options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
     options.picker_hint =
         "Select your FIFA Street 3 disc image (.iso). It is read as it is, nothing is extracted.";
     // "A new version is available": one request to GitHub on its own thread, never blocking.
@@ -168,6 +169,7 @@ class FifaStreet3App : public rex::ReXApp {
     options.subtitle = "FIFA Street 3  |  0.0.1 barebone port";
     options.settings_path = fs3::UserSettingsPath();
     options.in_game = true;
+    options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
     if (fs3::UpdateCheckOffered()) {
       options.update_check_cvar = "update_check";
     }
