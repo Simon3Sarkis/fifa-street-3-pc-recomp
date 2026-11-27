@@ -619,6 +619,51 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       off the render thread with a skip-draw fallback (a larger SDK change, and a 1:1 risk:
       skipped draws).
 
+24. **2026-11-27, research: PC settings inside the game's own menus (branch
+    `native-settings-research`).** Question: can our rows (vsync, screen mode, ...) live in FIFA
+    Street 3's own GAME SETTINGS / pause menu, drawn by the game? Answer: **feasible, but not by
+    filling a list from C++: the rows are written into the menus' ActionScript, so adding one means
+    changing that script at run time. Not prototyped (no row on screen yet).**
+    - The front end is EA APT (Flash-like). `data/fe/fe.big` (BIG4) holds one RefPack-compressed
+      BIGF per screen with "Apt Data" (movie + ActionScript bytecode) and "Apt const" (its
+      constant pool). `tools/fe_extract.py` extracts a screen to a scratch folder (read only).
+    - **Pause menu** (`67_pauseMenu`): seven buttons hardcoded in its script, `btn0`..`btn6` =
+      ResumeMatch, Controls, StartOver, ChooseSides, GameSettings, GameBrightnessControl, Quit,
+      each `gFM.addItem`'d with an ActionScript handler (`resumeMatch`, `changeSettings`,
+      `showBrightnessControl`, ...).
+    - **GAME SETTINGS** (`69_gameSettings` in a match, `30_gameSettings` from the main menu): one
+      script class `gameSettingsCommon` builds the rows from script arrays - `SETTING_ENUMS`
+      (`Profile.eGameSettings.GAMESETTING_*`: speech / in-game SFX / in-game music / menu SFX /
+      menu music volumes, camera, help overlays, auto replays, difficulty), `LABELS` (locale ids
+      such as `DifficultyLevel`, shown through `ltxt`), `TOGGLE_STRINGS` / `TOGGLE_VALUES` per row
+      (e.g. `CAMERA_STRINGS` Sideline / Action), sliders for volumes (`VOLUME_LEVELS`), two pages
+      (`MAX_NUM_PAGES`, `PAGETOGGLE_LABELS` Audio / Gameplay, `SECOND_PAGE_START`). Values are
+      read and written through native methods: `FS3_Profile.GetSetting(enum)` /
+      `SetSetting(enum, value)`, registered by name in `sub_821CAE10`. The enum names
+      (`GAMESETTING_*`, `eGameSettings`) are not in the executable, so the enum tables are
+      ActionScript too (a shared movie); the native code only sees numbers.
+    - So, from our side: the value side is easy (hook `GetSetting` / `SetSetting` for an enum
+      number the game doesn't use and run our handler: display / screen mode now, resolution /
+      vsync on restart), and so is a label (hook the locale lookup behind `ltxt` for our ids).
+      The row itself is not: it must exist in `SETTING_ENUMS` / `LABELS` / `TOGGLE_*` and fit the
+      page layout, which only the movie's bytecode creates. Two ways, neither changes files on
+      disk: (1) edit the movie's bytecode in memory when the game loads it (append to the arrays,
+      add a third page "PC"), with an APT assembler - the format is documented in part by the SAGE /
+      OpenSAGE modding work on APT; or (2) hook the APT interpreter in the recompiled code (its
+      debug strings are there: "Actionscript is attempting to use invalid objects in Extends
+      Opcode", "AptValue Still Allocated", ...) and append our entries when the script builds those
+      arrays. The string references aren't simple lis/addi loads, so finding the interpreter
+      needs a dedicated pass. The same applies to a single "PC SETTINGS" button in the pause
+      menu (`btn7`): the buttons are script too.
+    - **Rough effort for the full set** (screen mode, display, refresh, vsync, resolution, render
+      scale, upscaling, sharpening, texture filtering, FXAA, FPS counter): ~1-2 days to locate and
+      hook the APT interpreter (or write the bytecode patcher), ~0.5-1 day for a third "PC" page
+      (page count, page label, layout), ~1-2 hours per row (enum number, label, value strings,
+      handlers), ~0.5 day for the on/off switch and 1:1 checks (with native rows off the movies
+      must run untouched). About 3-5 days, with the risk in the first step. Rows with many
+      values (display list, refresh rates) fit the game's left/right toggles; free text (the disc
+      image) does not and stays in the launcher.
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
