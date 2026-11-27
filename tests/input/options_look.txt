@@ -1,0 +1,21 @@
+# Screenshots of the options menu in a match (Graphics tab), with presented-frame captures
+# (--present_capture_interval_ms). The menu slides in, stays ~7 s, slides out. Use
+# -Save work\saves\fresh_profile.
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000          # title screen (FIFA logo)
++1500  pressuntil START 1500 296 104 230 230 230 24 30000  # until the main menu heading shows
++1500  snap main_menu
++4000  press A 150   # PLAY NOW
++6000  press A 150   # select teams
++5000  press A 150   # line-ups
++5000  press A 150   # match settings: start
++7000  press B 150   # help cards off
++1200  press UP 150
++800   press A 150
++1500  stick L 0.6 0.3 2000
++3000  set launcher_autoplay_ms 7000
++0     set options_menu_tab 1
++0     log phase: menu open
++0     set options_menu_open true
++9000  log phase: menu closed
++500   quit

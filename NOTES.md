@@ -575,6 +575,45 @@ never inside a .pdata function. A second scan after adding them found nothing ne
       the browser) wasn't pressed in tests. Testing switches: `update_check_test_version`,
       `update_check_test_prereleases`.
 
+23. **2026-11-27, the options menu in the game's style, and the open issues (night run).**
+    - **Look**: the in-game menu and the launcher (same `LauncherDialog`) now follow FIFA Street 3's
+      menus, drawn with ImGui shapes only (no game art or fonts): a parchment panel with ragged paint
+      edges, splatter and drips, a big outlined upper-case title over the top-left edge, dark ink
+      text, dark tab pills with the selected one red, the hovered / focused row in a red pill with
+      an (A) glyph (as the game's "RESUME MATCH"), red BACK TO GAME / PLAY and dark QUIT pills. It
+      slides and fades in (0.20 s) and out (0.14 s; Play / Back / Quit act after the slide-out).
+      Every row, tab and behaviour is unchanged. Screenshots: in a match at 2560x1440 and in a
+      1280x720 window, and the launcher, with `options_menu_focus_row` (new testing cvar) to show
+      the pill. Fixed on the way: in the tab body the field column was placed from the panel's
+      padding, so a focused row scrolled the body sideways. **Font not done**: downloading an
+      OFL display font needs the owner's OK in that session's own chat; the built-in UI fonts
+      are used meanwhile. Seen once: one 1440p capture run showed the menu over a black frame (the
+      game's picture black from just before the menu opened); the rerun was normal.
+    - **a. 60 FPS full match**: main (build of 2026-11-25) and this branch back to back,
+      `perf_match_frames`: 29.9 and 29.9 FPS, `vkQueueSubmit` 18.1 and 17.9 ms a frame, with
+      Super Odyssey PC Recomp running on the same GPU. Both held up the same way (entry 21's
+      condition), so not chased.
+    - **b. 120 Hz pacing (`vblank_from_display` vs timer)**: not measured - with every run locked at
+      30 by the condition above, PresentMon's display-change intervals would compare two 30 FPS
+      lockings, not the pacing. `vblank_from_display` stays off.
+    - **c. Sharpening written as 0.20000000000000001**: toml++ turned `std::to_chars` off for Clang
+      (an old limitation) and printed doubles with 17 digits. `TOML_FLOAT_CHARCONV=1` on the
+      header-only target (SDK `thirdparty/CMakeLists.txt`): shortest exact text, the file now has
+      `present_fsr_sharpness_reduction = 0.2`, matching the RecompLauncher choice.
+    - **d. Silent exit after boot (2026-11-26 23:26:46)**: no crash dump, no WER report, no
+      Application / System event, and no exit line in the log (every exit path of the app logs,
+      and the crash handler would). Consistent with the process being terminated from outside
+      (`TerminateProcess` skips all of it); nothing in the game to fix.
+    - **e. Windowed below 60, first-run shader stutter**: not changed tonight. Windowed: on Windows
+      the Vulkan swapchain goes through the desktop compositor unless the driver presents it as a
+      flip-model DXGI swapchain (NVIDIA: "Vulkan/OpenGL present method: Prefer layered on DXGI
+      swapchain"); options are to tell players that, or to make borderless the default (it is
+      already). Shader stutter: pipelines are kept (`work/cache` / `userdata/cache`) and are
+      created at boot the next time ("Created 205 graphics pipelines from Vulkan storage"); a
+      pre-made list can't ship, as it is derived from the game's shaders. Option: build pipelines
+      off the render thread with a skip-draw fallback (a larger SDK change, and a 1:1 risk:
+      skipped draws).
+
 Next: Phase 4 list in PLAN.md: a whole match to the final whistle, goals and replays, the other modes,
 audio check by ear, saves reloaded, 2-player.
 
