@@ -1,0 +1,50 @@
+0      log boot
+0      waitpixel 410 446 231 231 231 24 120000
++1500  pressuntil START 1500 296 104 230 230 230 24 30000
++2500  snap s00
++3500  snap s01
++200   press A 150
++3500  snap s02
++200   press A 150
++3500  snap s03
++200   press A 150
++3500  snap s04
++200   press DOWN 150
++3500  snap s05
++200   press DOWN 150
++3500  snap s06
++200   press LEFT 120
++600   press LEFT 120
++600   press LEFT 120
++600   press LEFT 120
++3500  snap s07
++200   press A 150
++20000  snap s08
++20000  snap s09
++20000  snap s10
++20000  snap s11
++20000  snap s12
++20000  snap s13
++20000  snap s14
++20000  snap s15
++20000  snap s16
++20000  snap s17
++20000  snap s18
++20000  snap s19
++4000  snap s20
++200   press A 150
++4000  snap s21
++200   press A 150
++4000  snap s22
++200   press A 150
++4000  snap s23
++200   press B 150
++4000  snap s24
++200   press START 150
++4000  snap s25
++200   press DOWN 150
++4000  snap s26
++200   press A 150
++4000  snap s27
++4000  snap s28
++500   quit

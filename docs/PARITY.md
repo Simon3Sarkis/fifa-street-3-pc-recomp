@@ -20,7 +20,8 @@ run with `tools/run_script.ps1 -Save work\saves\fresh_profile`. Snaps: `work/sna
 | Practice Mode: team, line-ups, arena, practice court with keeper | Works | `px_practice` |
 | Xbox Live: menu opens; any online item says "You must be signed in to Xbox Live and the EA servers..." (as a console without Live) | Works | `px_live` |
 | My FIFA Street: game settings, controls help, video calibration, EA Trax playlist, profile management | Works | `px_myfs` |
-| Credits | Not checked yet | |
+| Credits | Not checked | |
+| Post-game menu (Play Now) | Works | `px_postgame3`: A on Rematch asks "Are you sure you want a rematch?" with NO preselected (a script answering A every time loops there: not a hang) |
 
 ## Areas of the gate
 
@@ -34,5 +35,5 @@ run with `tools/run_script.ps1 -Save work\saves\fresh_profile`. Snaps: `work/sna
 | Input | Works | Buttons, sticks, triggers via scripts; 2 controllers (`px_h2h`, `px_picks2`). Rumble and a real controller: owner's test. |
 | Gameplay | Works; reference comparison limited | Goals, tricks, Gamebreaker, instant replays, celebrations (`px_fullmatch2`, NOTES 6). With no input the controlled player (often the keeper) stands still, so the other side scores freely: normal. |
 | Saves | Works | Round trip: difficulty set to Cheeky, autosaved, quit; next start loads Cheeky (`px_save1` -> `px_save2`). A real console save: owner, if they have one. |
-| Stability | Running | `soak_2h`: 2 hours of Play Now matches back to back, memory sampled each minute. |
+| Stability | No crash or hang; memory flat; a few unexplained long frames | 2 h 0 min in the menus (`soak_2h_menu`): no crash, clean quit, memory 1,838 -> 1,839 MB over the last 100 min. 47 min of continuous play (`soak_play`, a 20-goal match restarted from the pause menu every 4 min, 11 restarts; stopped early by the owner): no crash, no error, memory 1,816 -> 1,879 MB, 1,412 windows after boot with 13 below 59.5 FPS. Open: 3 short bursts of long frames (worst 0.5 s at 18:26, 0.18-0.2 s at 18:36), not at restarts; cause not found (the PC was also in use then). |
 | Content | Partly | 7 arenas (NOTES 6), modes above, national teams. Street teams and other unlocks need challenge progress. |
