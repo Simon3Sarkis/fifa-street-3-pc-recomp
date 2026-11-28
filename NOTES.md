@@ -636,6 +636,23 @@ audio check by ear, saves reloaded, 2-player.
     33 ms, no driver warning. The other non-60 windows in these runs are the boot logo video (30, the
     game's own) and the paused menu.
 
+26. **2026-11-27, 0.0.3: smooth 60 on high-refresh displays, Updates tab, hidden pointer.** The owner
+    found the game smoother with a RivaTuner 60 FPS limit. Cause: the guest vblank ran on its own
+    timer, so on a 120 Hz desktop frames landed on varying refreshes (1 / 2 / 3 refreshes each).
+    `present_cadence_log` (presenter: refreshes per guest frame, FIFO) on the same match: timer
+    33-90% of frames up exactly 2 refreshes (depends on the start phase), `vblank_from_display`
+    92-98%, display lock + `present_frame_pacing` (a new frame replaces the shown one only after its
+    share of the DWM refresh period) 99.8-100%. Config: `vblank_from_display = true`. Counting
+    presents to measure the refresh period was wrong (the presenter presents more often than the
+    display refreshes in timer mode); DWM's period is used. Found while testing: reading settings
+    through the registry in the paint path could deadlock with a setting's change callback (FPS
+    counter set mid-game hung the game); the swapchain now reports its mode and the window settings
+    are read directly. Updates tab (launcher and in-game): newest release of any kind, Update
+    downloads the Windows zip, checks GitHub's SHA-256, unpacks with tar.exe, renames files in use
+    to .old (removed at the next start) and restarts; tested by a copy posing as 0.0.1 installing
+    the published 0.0.2. Menu: one row highlight (focus or hover, by the input in use), left / right
+    change values, placeholder tabs removed. The pointer is hidden in game, shown in the menus.
+
 ## Test loop
 
 - `tools/iterate.ps1 [-RunSeconds N] [-SkipCodegen] [-SkipBuild]`: codegen, build, copy DLLs + config,

@@ -1,4 +1,4 @@
-FIFA Street 3 - PC port, version 0.0.2 (pre-release, barebone port)
+FIFA Street 3 - PC port, version 0.0.3 (pre-release, barebone port)
 =====================================================================
 
 A native PC and Steam Deck port of the Xbox 360 FIFA Street 3, made by static recompilation
@@ -35,6 +35,8 @@ Every option's default is the Xbox 360 picture.
   anti-aliasing (off, FXAA, FXAA extreme). The frame rate stays at 60, as on the console.
 In the game each row says NOW (changes at once) or RESTART (game resolution, render scale and
 vsync: the next time the game starts).
+- Updates: see Updating below.
+Left / right change a value, A opens its list. The mouse pointer shows only in the menus.
 
 Steam Deck: keep render scale at 1x. Measured on the Deck: 60 FPS with 99.9% of frames on time at a
 15 W TDP (a short hitch about 3 times a match in the heaviest scenes); 99.6% at 10 W.
@@ -44,18 +46,20 @@ new version over this folder keeps all three.
 
 Updating
 --------
-With RecompLauncher, updates are automatic. Otherwise the launcher screen asks GitHub once at
-start whether a newer full release is out and, if so, shows its version and a button that opens
-the release page in your browser. Nothing is downloaded or installed. Turn the check off with
-"Check for updates" (Display tab) or update_check = false in fifastreet3.user.toml.
-To update: unzip the new version over this folder. Your settings, saves, shader cache and logs
-are kept.
+With RecompLauncher, it updates the game itself. Otherwise: the Updates tab (launcher screen and
+in-game options). At start the game asks GitHub once whether a newer version is out ("Check at
+start", on by default; or press Check now). Nothing is downloaded until you press Update: it
+downloads the new version, checks it, installs it over this folder and offers Restart now.
+Windows only; on Linux the tab links to the release page. Your settings, saves, shader cache and
+logs are kept. By hand: unzip the new version over this folder.
 
 Known issues
 ------------
 - Short stutters the first time each scene appears, while its shaders are built for your GPU. They
   are kept (userdata\cache) and don't come back.
-- On a high refresh rate display a few frames per minute can be held a refresh too long.
+- At 60 Hz, 120 Hz, 180 Hz or 240 Hz every frame stays on screen equally long (smooth 60). Other
+  rates (144 Hz, 165 Hz) can't divide 60 evenly: there exclusive fullscreen at 60 or 120 Hz is
+  smoother.
 
 Source and reports: https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp
 Licences: licenses\ (this port is GPL-3.0; the ReXGlue SDK is BSD-3-Clause).

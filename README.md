@@ -13,7 +13,7 @@ requests come later**, once the port plays 1:1.
 **No game files are in this repository or its releases.** You need your own copy of the game; everything
 derived from it (`game/`, `generated/`, `work/`, `out/`) stays local.
 
-## Playing (release 0.0.2)
+## Playing (release 0.0.3)
 
 1. Download the [latest release](https://github.com/Simon3Sarkis/fifa-street-3-pc-recomp/releases):
    `windows-x64.zip` for Windows, `linux-x86_64.tar.gz` for Linux and the Steam Deck. Unpack it anywhere.
@@ -40,6 +40,9 @@ is the Xbox 360 picture.
 - **Graphics:** game resolution (720p / 1080p), render scale (1x-4x), upscaling filter (bilinear,
   AMD FSR 1, AMD CAS) with sharpening, texture filtering (up to 16x anisotropic), anti-aliasing
   (FXAA).
+- **Updates:** see Updating below.
+
+Left / right change a value, A opens its list. The mouse pointer shows only in the menus.
 
 The frame rate stays at 60, as on the console.
 
@@ -49,11 +52,12 @@ TDP (a short hitch about 3 times a match in the heaviest scenes) and 99.6% at 10
 Your settings (`fifastreet3.user.toml`), saves (`userdata/`) and logs (`logs/`) stay next to the
 program; unpacking a new version over the old folder keeps them.
 
-**Updating:** with RecompLauncher, updates are automatic. Otherwise the launcher screen checks
-GitHub once at start for a newer full release and, if there is one, shows its version and a button
-that opens the release page (nothing is downloaded or installed; turn it off with "Check for
-updates" in the Display tab, or `update_check = false` in `fifastreet3.user.toml`). To update,
-unzip the new version over the old folder: settings, saves, shader cache and logs are kept.
+**Updating:** with RecompLauncher, it updates the game itself. Otherwise use the **Updates** tab
+(launcher and in-game options): the game checks GitHub once at start ("Check at start", or press
+**Check now**), and nothing is downloaded until you press **Update**, which installs the new
+version over the program and offers **Restart now** (Windows; on Linux the tab links to the
+release page). Settings, saves, shader cache and logs are kept. Coming from 0.0.2 or older: unzip
+the new version over the old folder once.
 
 FIFA Street 3 is (c) Electronic Arts. This project is not affiliated with or endorsed by EA or Microsoft.
 
@@ -97,7 +101,7 @@ settings, each with what it fixes and how it was measured.
 ```bash
 # In WSL, in the Linux build tree (sources synced from this checkout): build and package the release
 cmake --build out/build/linux-amd64-relwithdebinfo
-bash tools/make_release_linux.sh 0.0.2      # dist/fifastreet3-0.0.2-linux-x86_64.tar.gz
+bash tools/make_release_linux.sh 0.0.3      # dist/fifastreet3-0.0.3-linux-x86_64.tar.gz
 ```
 ```bash
 # From Git Bash on the PC: run a test script on the Deck over SSH (DECK=deck@<host> or tools/deck/deck.local)

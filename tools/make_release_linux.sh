@@ -9,7 +9,7 @@
 # No game files, no test tools. Built on Ubuntu 24.04: needs glibc 2.39 or newer (SteamOS 3.9 has 2.43).
 set -eu
 cd "$(dirname "$0")/.."
-VERSION="${1:-0.0.2}"
+VERSION="${1:-0.0.3}"
 BUILD="${BUILD:-out/build/linux-amd64-relwithdebinfo}"
 SDK_OUT="${SDK_OUT:-third_party/rexglue-sdk/out/linux-amd64}"
 NAME="fifastreet3-$VERSION-linux-x86_64"
