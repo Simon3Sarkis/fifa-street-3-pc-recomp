@@ -142,6 +142,8 @@ class FifaStreet3App : public rex::ReXApp {
   }
 
   void OnPostSetup() override {
+    // No mouse pointer over the game; the options menu shows it while it is open.
+    SetPointerVisible(false);
     if (auto* input = static_cast<rex::input::InputSystem*>(runtime()->input_system())) {
       // Fires on the guest thread that polls input.
       input->SetMenuChordCallback(
@@ -210,6 +212,7 @@ class FifaStreet3App : public rex::ReXApp {
     }
     REXCVAR_SET(options_menu_open, true);
     REXLOG_INFO("Options menu opened (guest frames so far: {})", GuestFrameCount());
+    SetPointerVisible(true);
   }
 
   // Frames the game has presented (counted while the FPS counter or debug overlay is on, else 0).
@@ -219,12 +222,21 @@ class FifaStreet3App : public rex::ReXApp {
     return presenter ? presenter->GetGuestFrameStats().frame_count : 0;
   }
 
+  // The mouse pointer over the game window: shown in the menus only.
+  void SetPointerVisible(bool visible) {
+    if (auto* w = window()) {
+      w->SetCursorVisibility(visible ? rex::ui::Window::CursorVisibility::kVisible
+                                     : rex::ui::Window::CursorVisibility::kHidden);
+    }
+  }
+
   void CloseOptions() {
     if (options_) {
       REXLOG_INFO("Options menu closed (guest frames so far: {})", GuestFrameCount());
       last_toggle_ = std::chrono::steady_clock::now();
     }
     options_.reset();
+    SetPointerVisible(false);
     REXCVAR_SET(options_menu_open, false);
     // The button that closed the menu (A, B, Start + Back) must not reach the game.
     if (auto* input =
