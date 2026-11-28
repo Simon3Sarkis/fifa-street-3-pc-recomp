@@ -12,6 +12,14 @@ gpu_plugin = 'xenos'
 # on vblank runs uncapped (Skate 1's finding).
 vsync = true
 
+# Windows: the 60 Hz vblank follows the display's refresh (every 2nd refresh at 120 Hz) instead of
+# a free-running timer, and the presenter keeps each frame up for its whole share of refreshes
+# (present_frame_pacing, on by default, borderless / windowed). Measured 2026-11-27 on a 120 Hz
+# display, frames shown for exactly 2 refreshes: timer 33-90% (depends on the phase it starts
+# at: the owner's "smoother with a 60 FPS RivaTuner limit"), display lock 92-98%, display lock +
+# pacing 99.8-100%. Not under Wine / Proton; Linux keeps the timer.
+vblank_from_display = true
+
 # Renderer: Vulkan, host render targets. Checked against Xbox 360 footage (youtube 2hWaR0zAdfk and
 # other IGN clips): Vulkan draws the player/fence/ball shadows and the correct player shading on both
 # render-target paths (D3D12 washes the players out; an earlier note that Vulkan host RTs lose the

@@ -54,7 +54,7 @@ endif()
 # rexgpu-xenos next to the exe (the runtime config selects it via gpu_plugin).
 rexglue_setup_target(fifastreet3 GPU_PLUGINS xenos)
 if(WIN32)
-    target_link_libraries(fifastreet3 PRIVATE winhttp)  # update check (fifastreet3_update.cpp)
+    target_link_libraries(fifastreet3 PRIVATE winhttp bcrypt)  # updater (fifastreet3_update.cpp)
 endif()
 # The menus' display face (Anton, SIL OFL 1.1: packaging/fonts/OFL.txt) next to the exe, as in a
 # release.

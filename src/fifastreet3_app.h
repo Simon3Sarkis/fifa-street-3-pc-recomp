@@ -41,6 +41,19 @@ class FifaStreet3App : public rex::ReXApp {
   // instead of the working directory, and a portable.txt beside the exe keeps saves and caches in
   // the exe folder too.
   void OnConfigurePaths(rex::PathConfig& paths) override {
+    // After an update's restart: wait for the old process, remove the files it replaced.
+    fs3::UpdaterStartup();
+    // Restart now (Updates tab) ends the program the normal way, settings saved.
+    fs3::SetUpdaterQuit([this]() {
+      app_context().CallInUIThreadDeferred([this]() {
+        if (launcher_) {
+          launcher_.reset();
+          app_context().QuitFromUIThread();
+        } else if (window()) {
+          window()->RequestClose();
+        }
+      });
+    });
     const auto exe_dir = rex::filesystem::GetExecutableFolder();
     // The player's settings (fifastreet3.user.toml) sit on top of the shipped fifastreet3.toml; the
     // SDK saves there too. Scripted runs (tests, benchmarks) leave them out so they stay
@@ -85,18 +98,19 @@ class FifaStreet3App : public rex::ReXApp {
     }
     rex::ui::LauncherDialog::Options options;
     options.title = "FIFA Street 3";
-    options.subtitle = "PC port  |  0.0.2 pre-release, for testing";
+    options.subtitle = "PC port  |  0.0.3 pre-release, for testing";
     options.game_path = defaults.game_data_root;
     options.settings_path = fs3::UserSettingsPath();
     options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
     options.picker_hint =
         "Select your FIFA Street 3 disc image (.iso), read as it is, or an extracted game folder.";
-    // "A new version is available": one request to GitHub on its own thread, never blocking.
-    options.update_notice = std::make_shared<rex::ui::LauncherDialog::UpdateNotice>();
+    // The Updates tab: the check at start runs on its own thread, never blocking; nothing is
+    // downloaded until the player presses Update.
+    options.update_notice = fs3::Updater();
     if (fs3::UpdateCheckOffered()) {
       options.update_check_cvar = "update_check";
     }
-    fs3::StartUpdateCheck(options.update_notice);
+    fs3::StartUpdateCheck();
     auto play = [this, defaults, resume](const std::filesystem::path& game) {
       rex::PathConfig paths = defaults;
       paths.game_data_root = game;
@@ -166,10 +180,11 @@ class FifaStreet3App : public rex::ReXApp {
     const bool pause = REXCVAR_GET(pause_in_options_menu);
     rex::ui::LauncherDialog::Options options;
     options.title = "Options";
-    options.subtitle = "FIFA Street 3  |  0.0.2 barebone port";
+    options.subtitle = "FIFA Street 3  |  0.0.3 barebone port";
     options.settings_path = fs3::UserSettingsPath();
     options.in_game = true;
     options.display_font_path = rex::filesystem::GetExecutableFolder() / "fonts" / "Anton-Regular.ttf";
+    options.update_notice = fs3::Updater();
     if (fs3::UpdateCheckOffered()) {
       options.update_check_cvar = "update_check";
     }
